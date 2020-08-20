@@ -1,0 +1,26 @@
+.urmom {
+    color: rgb(255, 123, 231);
+    background-color: white;
+    border: 0px;
+    box-shadow: none;
+}
+
+.urmom:hover {
+    background-color: pink;
+}
+
+.urmom:active,
+.urmom:hover {
+    background-color: pink !important;
+}
+
+.card {
+    border: 1px solid black;
+    width: 40vw;
+}
+
+.background {
+    background-color: rgb(255, 240, 209);
+    min-height: 100vh;
+    min-width: 100vw;
+}
