@@ -8,21 +8,37 @@
     background-color: rgb(255, 227, 170);
 }
 
-.card {
+.test {
+    width: 200px;
+    height: 200px;
+    /* box-shadow: 0px 0px 20px lightgrey; */
+    float: left;
+}
+
+.task, .task:focus {
     width: 20vw;
     border: none;
     border-radius: 4px;
-    box-shadow: none !important;
-    margin-left: -10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    box-shadow: none;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.225)!important;
+    text-align: left;
+    /* margin:0; */
+}
+
+.task:hover, .task:focus {
+    box-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.225)!important;
 }
 
 .container {
-    width: 30vw;
+    padding: 0;
     margin: 10px;
     float: left;
-    border-radius: 4px;
+    border-radius: 8px;
+}
+
+.rowmargin {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .none {
@@ -30,12 +46,12 @@
 }
 
 .red, .red:active, .red:hover {
-    background-color: red !important;
+    background-color: red;
 }
 
 .red:active, .red:focus {
-    color: white;
-    background-color: rgb(200, 0, 0) !important;
+    color: red !important;
+    background-color: white !important;
 }
 
 .orange, .orange:active, .orange:hover {
@@ -43,8 +59,8 @@
 }
 
 .orange:active, .orange:focus {
-    color: white;
-    background-color: rgb(200, 130, 0) !important;
+    color: orange !important;
+    background-color: white !important;
 }
 
 .green, .green:active, .green:hover {
@@ -52,8 +68,8 @@
 }
 
 .green:active, .green:focus {
-    color: white;
-    background-color: rgb(0, 100, 0) !important;
+    color: green !important;
+    background-color: white !important;
 }
 
 .blue, .blue:active, .blue:hover {
