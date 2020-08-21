@@ -1,26 +1,69 @@
-.urmom {
-    color: rgb(255, 123, 231);
-    background-color: white;
-    border: 0px;
-    box-shadow: none;
-}
-
-.urmom:hover {
-    background-color: pink;
-}
-
-.urmom:active,
-.urmom:hover {
-    background-color: pink !important;
-}
-
-.card {
-    border: 1px solid black;
-    width: 40vw;
-}
-
 .background {
     background-color: rgb(255, 240, 209);
     min-height: 100vh;
     min-width: 100vw;
+}
+
+.navbar {
+    background-color: rgb(255, 227, 170);
+}
+
+.card {
+    width: 20vw;
+    border: none;
+    border-radius: 4px;
+    box-shadow: none !important;
+    margin-left: -10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.container {
+    width: 30vw;
+    margin: 10px;
+    float: left;
+    border-radius: 4px;
+}
+
+.none {
+    background-color: white;
+}
+
+.red, .red:active, .red:hover {
+    background-color: red !important;
+}
+
+.red:active, .red:focus {
+    color: white;
+    background-color: rgb(200, 0, 0) !important;
+}
+
+.orange, .orange:active, .orange:hover {
+    background-color: orange;
+}
+
+.orange:active, .orange:focus {
+    color: white;
+    background-color: rgb(200, 130, 0) !important;
+}
+
+.green, .green:active, .green:hover {
+    background-color: green;
+}
+
+.green:active, .green:focus {
+    color: white;
+    background-color: rgb(0, 100, 0) !important;
+}
+
+.blue, .blue:active, .blue:hover {
+    background-color: blue;
+}
+
+.indigo, .indigo:active, .indigo:hover {
+    background-color: indigo;
+}
+
+.violet, .violet:active, .violet:hover {
+    background-color: violet;
 }
