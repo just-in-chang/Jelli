@@ -5,14 +5,14 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal'
+import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 
 function App() {
     let list = [];
     for (let i = 0; i < 10; i++) list.push("hi");
-    const [modalShow, setModalShow] = React.useState(false);
+    let [isShow, setModalShow] = React.useState(false);
 
     return (
         <div className="background">
@@ -28,8 +28,11 @@ function App() {
                     <Card.Body className="text-center">
                         <Container fluid>
                             <Row className="rowmargin">
-                                <Button className="task red" onClick={() => setModalShow(true)}>test</Button>
-                                <showModal show={setModalShow} onHide={() => setModalShow(false)}></showModal>
+                                <Button className="task red" onClick = {() => setModalShow = true}>test</Button>
+                                {/* <Modal show={setModalShow}>
+                                  <Modal.Header>cock</Modal.Header>
+                                  <Modal.Body>and ball</Modal.Body>
+                                </Modal> */}
                             </Row>
                             <Row className="rowmargin">
                                 <Button className="task orange">test</Button>
