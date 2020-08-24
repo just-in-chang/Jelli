@@ -130,7 +130,7 @@ const deleteBoard = (id) => {
 
 /**
  * Returns JSON with data of category
- * @param {*} id Id of the board
+ * @param {*} id Id of the category
  */
 const getCategory = (id) => {
     let http = new XMLHttpRequest();
@@ -179,8 +179,8 @@ const editCategory = (id, name, position) => {
 };
 
 /**
- * Deletes a board
- * @param {*} id Id of board to delete
+ * Deletes a category
+ * @param {*} id Id of category to delete
  */
 const deleteCategory = (id) => {
     let http = new XMLHttpRequest();
@@ -192,7 +192,7 @@ const deleteCategory = (id) => {
 
 /**
  * Returns JSON with data of card
- * @param {*} id Id of the board
+ * @param {*} id Id of the card
  */
 const getCard = (id) => {
     let http = new XMLHttpRequest();
@@ -203,9 +203,9 @@ const getCard = (id) => {
 };
 
 /**
- * Creates a new board
- * @param {*} categoryId Board's owner's username
- * @param {*} card Name of the new board
+ * Creates a new card
+ * @param {*} categoryId Card's owner's username
+ * @param {*} card Name of the new card
  */
 const newCard = (categoryId, card) => {
     let http = new XMLHttpRequest();
