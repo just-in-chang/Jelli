@@ -68,13 +68,10 @@ const changePassword = (username, password, newPassword) => {
  */
 const getBoard = (id) => {
     let http = new XMLHttpRequest();
-    http.open("GET", BOARDS_URL, false);
+    let url = BOARDS_URL + id + "/";
+    http.open("GET", url, false);
     http.send(null);
-    let boards = JSON.parse(http.responseText);
-    let add = id >= boards[id] ? -1 : 1;
-    for (let i = 0; i < boards.length; i += add)
-        if (id == boards[i].id) return boards[i];
-    return null;
+    return http.responseText;
 };
 
 /**
@@ -127,6 +124,30 @@ const deleteBoard = (id) => {
     let http = new XMLHttpRequest();
     let url = BOARDS_URL + id + "/";
     http.open("DELETE", url, false);
+    http.send(null);
+    return http.responseText;
+};
+
+/**
+ * Returns JSON with data of category
+ * @param {*} id Id of the board
+ */
+const getCategory = (id) => {
+    let http = new XMLHttpRequest();
+    let url = CATEGORIES_URL + id + "/";
+    http.open("GET", url, false);
+    http.send(null);
+    return http.responseText;
+};
+
+/**
+ * Returns JSON with data of card
+ * @param {*} id Id of the board
+ */
+const getCard = (id) => {
+    let http = new XMLHttpRequest();
+    let url = CARDS_URL + id + "/";
+    http.open("GET", url, false);
     http.send(null);
     return http.responseText;
 };
