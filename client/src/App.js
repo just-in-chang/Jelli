@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import NavBar from 'react-bootstrap/NavBar';
 import Card from 'react-bootstrap/Card';
@@ -6,13 +6,17 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+import Overlay from 'react-bootstrap/Overlay';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 
 function App() {
     let list = [];
     for (let i = 0; i < 10; i++) list.push("hi");
-    let [isShow, setModalShow] = React.useState(false);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     return (
         <div className="background">
@@ -28,11 +32,8 @@ function App() {
                     <Card.Body className="text-center">
                         <Container fluid>
                             <Row className="rowmargin">
-                                <Button className="task red" onClick = {() => setModalShow = true}>test</Button>
-                                {/* <Modal show={setModalShow}>
-                                  <Modal.Header>cock</Modal.Header>
-                                  <Modal.Body>and ball</Modal.Body>
-                                </Modal> */}
+                                <Button className="task red" onClick = {handleShow}>test</Button>
+                                <CardModal show={show} onHide={handleClose}/>
                             </Row>
                             <Row className="rowmargin">
                                 <Button className="task orange">test</Button>
@@ -51,32 +52,42 @@ function App() {
     );
 }
 
-function showModal (props) {
-    return (
-        <Modal
-          {...props}
-          size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Modal heading
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h4>Centered Modal</h4>
-            <p>
-              Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-              dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-              consectetur ac, vestibulum at eros.
-            </p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={props.onHide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      );
+function CardModal (props) {
+  const [oShow, oSetShow] = useState(false);
+  const target = React.useRef(null);
+  return (
+
+    <Modal {...props}>
+      <Modal.Header closeButton>cock</Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="testformcolor">
+              <Col>
+                <Row>
+                  <Form.Label>Color</Form.Label>
+                </Row>
+                <Row>
+                  <Button className="mb-2" >Color</Button>
+                  {/* <Overlay target={target.current} show={oShow} placement="right">
+                    <Card>
+                      <Card.Header>test</Card.Header>
+                      <Card.Body>more test</Card.Body>
+                    </Card>
+                  </Overlay> */}
+                </Row>
+              </Col>
+            </Form.Group>
+            <Form.Group controlId="testform">
+              <Form.Label>Description</Form.Label>
+              <Form.Control as="textarea" rows="5"/>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
 
 export default App;
