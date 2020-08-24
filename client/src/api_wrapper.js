@@ -6,6 +6,10 @@ const BOARDS_URL = HOST_URL_BASE + "boards/";
 const CATEGORIES_URL = HOST_URL_BASE + "categories/";
 const CARDS_URL = HOST_URL_BASE + "cards/";
 
+/**
+ * Returns JSON with data of user
+ * @param {*} username Usesrname of user
+ */
 const getUser = (username) => {
     let http = new XMLHttpRequest();
     http.open("GET", USERS_URL, false);
@@ -17,6 +21,11 @@ const getUser = (username) => {
     return null;
 };
 
+/**
+ * Creates a new user
+ * @param {*} username New user's username
+ * @param {*} password New user's password
+ */
 const newUser = (username, password) => {
     if (getUser(username) != null) return "Username already taken!";
     let http = new XMLHttpRequest();
@@ -27,6 +36,12 @@ const newUser = (username, password) => {
     return JSON.parse(http.responseText);
 };
 
+/**
+ * Changes user's password
+ * @param {*} username User's username
+ * @param {*} password User's old password
+ * @param {*} newPassword User's new password
+ */
 const changePassword = (username, password, newPassword) => {
     let http = new XMLHttpRequest();
     let doc = getUser(username);
@@ -47,4 +62,83 @@ const changePassword = (username, password, newPassword) => {
     return "Password Incorrect.";
 };
 
-console.log(newUser("g", "f"));
+/**
+ * Returns JSON with data of board
+ * @param {*} id Id of the board
+ */
+const getBoard = (id) => {
+    let http = new XMLHttpRequest();
+    http.open("GET", BOARDS_URL, false);
+    http.send(null);
+    let boards = JSON.parse(http.responseText);
+    let add = id >= boards[id] ? -1 : 1;
+    for (let i = 0; i < boards.length; i += add)
+        if (id == boards[i].id) return boards[i];
+    return null;
+};
+
+/**
+ * Creates a new board
+ * @param {*} username Board's owner's username
+ * @param {*} board Name of the new board
+ */
+const newBoard = (username, board) => {
+    let http = new XMLHttpRequest();
+    let user = getUser(username);
+    let userId = user.id;
+    let doc = {
+        name: board,
+        owner: userId,
+        position: user.boards.length,
+        star: false,
+        categories: [],
+    };
+    http.open("POST", BOARDS_URL, false);
+    http.setRequestHeader("Content-Type", "application/json");
+    http.send(JSON.stringify(doc));
+    return http.responseText;
+};
+
+/**
+ * Changes info of board; use `null` if data not changed
+ * @param {*} id Id of board to change
+ * @param {*} name New name of board
+ * @param {*} position New position of board
+ * @param {*} star `true` if the board starred
+ */
+const editBoard = (id, name, position, star) => {
+    let http = new XMLHttpRequest();
+    let board = getBoard(id);
+    let url = BOARDS_URL + id + "/";
+    if (name != null) board.name = name;
+    if (position != null) board.position = position;
+    if (star != null) board.star = star;
+    http.open("PUT", url, false);
+    http.setRequestHeader("Content-Type", "application/json");
+    http.send(JSON.stringify(board));
+    return http.responseText;
+};
+
+/**
+ * Deletes a board
+ * @param {*} id Id of board to delete
+ */
+const deleteBoard = (id) => {
+    let http = new XMLHttpRequest();
+    let url = BOARDS_URL + id + "/";
+    http.open("DELETE", url, false);
+    http.send(null);
+    return http.responseText;
+};
+
+console.log(deleteBoard(3));
+
+module.exports = {
+    getUser,
+    newUser,
+    changePassword,
+    getBoard,
+    newBoard,
+    editBoard,
+    deleteBoard,
+};
