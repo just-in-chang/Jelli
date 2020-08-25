@@ -8,62 +8,100 @@
     background-color: rgb(255, 227, 170);
 }
 
-.card {
-    width: 20vw;
+.task,
+.task:focus {
+    width: 100%;
     border: none;
     border-radius: 4px;
-    box-shadow: none !important;
-    margin-left: -10px;
+    box-shadow: none;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.225) !important;
+    text-align: left;
+    /* margin:0; */
+}
+
+.task:hover,
+.task:focus {
+    box-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.225) !important;
+}
+
+.container {
+    padding: 0;
+    margin: 10px;
+    float: left;
+    border-radius: 8px; 
+    width: 30vw;
+    max-width: 240px;
+    min-width: 200px;
+}
+
+.addcard {
+    /* float: right; */
+}
+
+.rowmargin {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-.container {
-    width: 30vw;
-    margin: 10px;
-    float: left;
-    border-radius: 4px;
+.contcol {
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .none {
     background-color: white;
 }
 
-.red, .red:active, .red:hover {
-    background-color: red !important;
+.red,
+.red:active,
+.red:focus {
+    background-color: red;
 }
 
-.red:active, .red:focus {
-    color: white;
-    background-color: rgb(200, 0, 0) !important;
+.red:active,
+.red:hover {
+    color: red !important;
+    background-color: white !important;
 }
 
-.orange, .orange:active, .orange:hover {
+.orange,
+.orange:active,
+.orange:focus {
     background-color: orange;
 }
 
-.orange:active, .orange:focus {
-    color: white;
-    background-color: rgb(200, 130, 0) !important;
+.orange:active,
+.orange:hover {
+    color: orange !important;
+    background-color: white !important;
 }
 
-.green, .green:active, .green:hover {
+.green,
+.green:active,
+.green:focus {
     background-color: green;
 }
 
-.green:active, .green:focus {
-    color: white;
-    background-color: rgb(0, 100, 0) !important;
+.green:active,
+.green:hover {
+    color: green !important;
+    background-color: white !important;
 }
 
-.blue, .blue:active, .blue:hover {
+.blue,
+.blue:active,
+.blue:hover {
     background-color: blue;
 }
 
-.indigo, .indigo:active, .indigo:hover {
+.indigo,
+.indigo:active,
+.indigo:hover {
     background-color: indigo;
 }
 
-.violet, .violet:active, .violet:hover {
+.violet,
+.violet:active,
+.violet:hover {
     background-color: violet;
 }
