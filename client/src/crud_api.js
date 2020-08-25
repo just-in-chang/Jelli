@@ -1,4 +1,5 @@
 let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const fetch = require("node-fetch");
 
 const HOST_URL_BASE = "http://127.0.0.1:8000/";
 const USERS_URL = HOST_URL_BASE + "users/";
@@ -10,14 +11,21 @@ const CARDS_URL = HOST_URL_BASE + "cards/";
  * Returns JSON with data of user
  * @param {*} username Usesrname of user
  */
-const getUser = (username) => {
-    let http = new XMLHttpRequest();
-    http.open("GET", USERS_URL, false);
-    http.send(null);
-    let users = JSON.parse(http.responseText);
-    for (let i = 0; i < users.length; i++) {
-        if (users[i].username == username) return users[i];
-    }
+const getUser = async (username) => {
+    const options = {
+        method: "GET",
+    };
+
+    await fetch(USERS_URL, options)
+        .then((r) => r.json())
+        .then((r) => {
+            for (let i = 0; i < r.length; i++)
+                if (r[i].username == username) {
+                    console.log(r[i].username, username);
+                    return r[i];
+                }
+        });
+    console.log("hi");
     return null;
 };
 
@@ -27,13 +35,17 @@ const getUser = (username) => {
  * @param {*} password New user's password
  */
 const newUser = (username, password) => {
-    if (getUser(username) != null) return "Username already taken!";
-    let http = new XMLHttpRequest();
-    let doc = { username: username, password: password, boards: [] };
-    http.open("POST", USERS_URL, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(doc));
-    return JSON.parse(http.responseText);
+    // const options = {
+    //     method: "POST",
+    //     headers: {
+    //         Accept: "application/json",
+    //     },
+    //     body: { username: username, password: password, boards: [] },
+    // };
+    // http.open("POST", USERS_URL, false);
+    // http.setRequestHeader("Content-Type", "application/json");
+    // http.send(JSON.stringify(doc));
+    // return JSON.parse(http.responseText);
 };
 
 /**
@@ -238,10 +250,10 @@ const editCard = (id, title, description, color, position) => {
     if (title != null) card.title = title;
     if (description != null) card.description = description;
     if (color != null) card.color = color;
-    if (position != null) board.position = position;
+    if (position != null) card.position = position;
     http.open("PUT", url, false);
     http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(board));
+    http.send(JSON.stringify(card));
     return http.responseText;
 };
 
