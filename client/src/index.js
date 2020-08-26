@@ -13,7 +13,7 @@ import "./index.css";
 function RegisterModal(props) {
     const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         let username = e.target.username.value;
         let password = e.target.password.value;
         let passwordConfirm = e.target.passwordConfirm.value;
@@ -27,9 +27,10 @@ function RegisterModal(props) {
             passwordConfirm.length == 0
         )
             return setError("Please complete all fields");
-        else if (getUser(username) != null)
+        else if (password != passwordConfirm)
+            return setError("Password does not match");
+        else if ((await getUser(username)) != null)
             return setError("This username has already been taken");
-        
     };
 
     return (

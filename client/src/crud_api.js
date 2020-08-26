@@ -16,17 +16,13 @@ const getUser = async (username) => {
         method: "GET",
     };
 
-    await fetch(USERS_URL, options)
+    fetch(USERS_URL, options)
         .then((r) => r.json())
         .then((r) => {
             for (let i = 0; i < r.length; i++)
-                if (r[i].username == username) {
-                    console.log(r[i].username, username);
-                    return r[i];
-                }
+                if (r[i].username == username) return r[i];
+            return null;
         });
-    console.log("hi");
-    return null;
 };
 
 /**
