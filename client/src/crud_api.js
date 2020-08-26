@@ -7,42 +7,59 @@ const BOARDS_URL = HOST_URL_BASE + "boards/";
 const CATEGORIES_URL = HOST_URL_BASE + "categories/";
 const CARDS_URL = HOST_URL_BASE + "cards/";
 
-/**
- * Returns JSON with data of user
- * @param {*} username Usesrname of user
- */
-const getUser = async (username) => {
-    const options = {
+const handleRegister = (username, password, error, success) => {
+    const optionsGET = {
         method: "GET",
     };
+    const optionsPOST = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            boards: [],
+        }),
+    };
 
-    fetch(USERS_URL, options)
+    fetch(USERS_URL, optionsGET)
         .then((r) => r.json())
         .then((r) => {
             for (let i = 0; i < r.length; i++)
                 if (r[i].username == username) return r[i];
             return null;
+        })
+        .then((r) => {
+            if (r != null) return error("This username has already been taken");
+            else {
+                fetch(USERS_URL, optionsPOST);
+                error("");
+                return success(username);
+            }
         });
 };
 
-/**
- * Creates a new user
- * @param {*} username New user's username
- * @param {*} password New user's password
- */
-const newUser = (username, password) => {
-    // const options = {
-    //     method: "POST",
-    //     headers: {
-    //         Accept: "application/json",
-    //     },
-    //     body: { username: username, password: password, boards: [] },
-    // };
-    // http.open("POST", USERS_URL, false);
-    // http.setRequestHeader("Content-Type", "application/json");
-    // http.send(JSON.stringify(doc));
-    // return JSON.parse(http.responseText);
+const handleLogin = (username, password, error, success) => {
+    const optionsGET = {
+        method: "GET",
+    };
+
+    fetch(USERS_URL, optionsGET)
+        .then((r) => r.json())
+        .then((r) => {
+            for (let i = 0; i < r.length; i++)
+                if (r[i].username == username && r[i].password == password)
+                    return true;
+            return false;
+        })
+        .then((r) => {
+            if (!r) error("Username or password incorrect");
+            else success();
+        });
 };
+
+const getUser = () => {};
 
 /**
  * Changes user's password
@@ -266,8 +283,9 @@ const deleteCard = (id) => {
 };
 
 module.exports = {
-    getUser,
-    newUser,
+    handleRegister,
+    handleLogin,
+
     changePassword,
     getBoard,
     newBoard,

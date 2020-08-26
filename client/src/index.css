@@ -7,19 +7,20 @@
 }
 
 .rlButtons {
-    width: 50vw;
-    height: 50vh;
+    width: 70vw;
+    height: 35vw;
     display: flex;
     align-items: stretch;
     justify-content: center;
     flex-direction: row;
+    margin: 15vh;
 }
 
 .rlButton {
     align-items: stretch;
     text-align: center;
     font-size: 5vh;
-    width: 50vw;
+    margin: 5vh;
 }
 
 .orange,

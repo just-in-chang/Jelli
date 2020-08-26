@@ -1,17 +1,23 @@
-import React, { useState, useStateWithPromise } from "react";
-import ReactDOM from "react-dom";
-import { App, HeaderBar } from "./App";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-import * as serviceWorker from "./serviceWorker";
-import { getUser, newUser } from "./crud_api";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Cookies from "universal-cookie";
+import { App, HeaderBar } from "./App";
+import { handleLogin, handleRegister } from "./crud_api";
 import "./index.css";
+import * as serviceWorker from "./serviceWorker";
 
 function RegisterModal(props) {
     const [error, setError] = useState("");
+
+    const success = (u) => {
+        props.cookies.set("user", u, { path: "/" });
+        window.location = "/board";
+    };
 
     const handleSubmit = async (e) => {
         let username = e.target.username.value;
@@ -29,8 +35,7 @@ function RegisterModal(props) {
             return setError("Please complete all fields");
         else if (password != passwordConfirm)
             return setError("Password does not match");
-        else if ((await getUser(username)) != null)
-            return setError("This username has already been taken");
+        else return handleRegister(username, password, setError, success);
     };
 
     return (
@@ -69,8 +74,21 @@ function RegisterModal(props) {
 function LoginModal(props) {
     const [error, setError] = useState("");
 
+    const success = (u) => {
+        props.cookies.set("user", u, { path: "/" });
+        window.location = "/board";
+    };
+
     const handleSubmit = (e) => {
-        console.log(e);
+        let username = e.target.username.value;
+        let password = e.target.password.value;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (username.length == 0 || password.length == 0)
+            setError("Please complete all fields");
+        else handleLogin(username, password, setError, success);
     };
 
     return (
@@ -94,7 +112,7 @@ function LoginModal(props) {
                         type="submit"
                         className="submit orange"
                     >
-                        Register
+                        Login
                     </Button>
                 </Modal.Footer>
             </form>
@@ -106,16 +124,27 @@ function Login() {
     const [showRegister, setShowRegister] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
 
-    const handleRegisterSubmit = () => {
-        handleCloseRegister();
-    };
     const handleCloseRegister = () => setShowRegister(false);
     const handleShowRegister = () => setShowRegister(true);
+
+    const handleCloseLogin = () => setShowLogin(false);
+    const handleShowLogin = () => setShowLogin(true);
+
+    const cookies = new Cookies();
 
     return (
         <div>
             <HeaderBar />
-            <RegisterModal show={showRegister} onHide={handleCloseRegister} />
+            <RegisterModal
+                show={showRegister}
+                onHide={handleCloseRegister}
+                cookies={cookies}
+            />
+            <LoginModal
+                show={showLogin}
+                onHide={handleCloseLogin}
+                cookies={cookies}
+            />
             <div className="background">
                 <div className="rlButtons">
                     <Button
@@ -124,7 +153,12 @@ function Login() {
                     >
                         Register
                     </Button>
-                    <Button className="orange task rlButton">Login</Button>
+                    <Button
+                        className="orange task rlButton"
+                        onClick={handleShowLogin}
+                    >
+                        Login
+                    </Button>
                 </div>
             </div>
         </div>
