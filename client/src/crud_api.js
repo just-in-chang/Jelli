@@ -26,16 +26,19 @@ const handleRegister = (username, password, error, success) => {
     fetch(USERS_URL, optionsGET)
         .then((r) => r.json())
         .then((r) => {
-            for (let i = 0; i < r.length; i++)
-                if (r[i].username == username) return r[i];
-            return null;
+            let id = 0;
+            for (let i = 0; i < r.length; i++) {
+                id = r[i].id;
+                if (r[i].username == username) return r[i].id;
+            }
+            return id;
         })
         .then((r) => {
-            if (r != null) return error("This username has already been taken");
+            if (r > 0) return error("This username has already been taken");
             else {
                 fetch(USERS_URL, optionsPOST);
                 error("");
-                return success(username);
+                return success(r);
             }
         });
 };
@@ -50,12 +53,73 @@ const handleLogin = (username, password, error, success) => {
         .then((r) => {
             for (let i = 0; i < r.length; i++)
                 if (r[i].username == username && r[i].password == password)
-                    return true;
-            return false;
+                    return r[i].id;
+            return -1;
         })
         .then((r) => {
-            if (!r) error("Username or password incorrect");
-            else success();
+            if (r < 0) error("Username or password incorrect");
+            else success(r);
+        });
+};
+
+const addBoards = (id, star, board) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    let url = USERS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => r.json())
+        .then((r) => {
+            return r.boards;
+        })
+        .then((r) => {
+            let stars = [];
+            let boards = [];
+            for (let i = 0; i < r.length; i++)
+                if (r[i].star) stars.push(r[i].name);
+                else boards.push(r[i].name);
+            star(stars);
+            board(boards);
+        });
+};
+
+/**
+ * Creates a new board
+ * @param {*} username Board's owner's username
+ * @param {*} board Name of the new board
+ */
+const newBoard = (id, board, star, error, starM, boardsM) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    let url = USERS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => r.json())
+        .then((r) => {
+            for (let i = 0; i < r.boards.length; i++)
+                if (r.boards[i].name == board) return -1;
+            return r.boards.length;
+        })
+        .then((r) => {
+            if (r < 0) return error("Board name already taken");
+            const optionsPOST = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: board,
+                    owner: id,
+                    position: r,
+                    star: star,
+                    categories: [],
+                }),
+            };
+
+            fetch(BOARDS_URL, optionsPOST).then((r) => {
+                if (star) return starM(board);
+                else return boardsM(board);
+            });
         });
 };
 
@@ -96,28 +160,6 @@ const getBoard = (id) => {
     let url = BOARDS_URL + id + "/";
     http.open("GET", url, false);
     http.send(null);
-    return http.responseText;
-};
-
-/**
- * Creates a new board
- * @param {*} username Board's owner's username
- * @param {*} board Name of the new board
- */
-const newBoard = (username, board) => {
-    let http = new XMLHttpRequest();
-    let user = getUser(username);
-    let userId = user.id;
-    let doc = {
-        name: board,
-        owner: userId,
-        position: user.boards.length,
-        star: false,
-        categories: [],
-    };
-    http.open("POST", BOARDS_URL, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(doc));
     return http.responseText;
 };
 
@@ -285,10 +327,11 @@ const deleteCard = (id) => {
 module.exports = {
     handleRegister,
     handleLogin,
+    addBoards,
+    newBoard,
 
     changePassword,
     getBoard,
-    newBoard,
     editBoard,
     deleteBoard,
     getCategory,

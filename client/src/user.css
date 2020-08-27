@@ -1,0 +1,67 @@
+.add {
+    max-height: 5vh;
+    max-width: 5vh;
+}
+
+.backgroundU {
+    background-color: rgb(255, 240, 209);
+    min-width: 98vw;
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+}
+.backgroundUU {
+    background-color: rgb(255, 240, 209);
+    min-height: 64.6vh;
+    min-width: 98vw;
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+}
+
+.board {
+    height: 25vh;
+    width: 25vh;
+    text-align: center;
+}
+
+.green,
+.green:active,
+.green:focus {
+    margin: 3vh;
+    padding: 0px !important;
+    height: 25vh;
+    width: 25vh;
+    background-color: green;
+    border-style: none !important;
+}
+
+.green:active,
+.green:hover {
+    color: green !important;
+    background-color: white !important;
+    border-style: none !important;
+}
+
+.greenB {
+    background-color: green;
+}
+
+h1 {
+    font-size: 5vh;
+    text-align: center;
+    padding: 3vh;
+    margin: 0px;
+    background-color: rgb(255, 240, 209);
+}
+
+h2 {
+    font-size: 4vh;
+    padding: 2vh;
+    margin: 0px;
+    background-color: rgb(255, 240, 209);
+}
+
+h3 {
+    font-size: 3vh;
+}

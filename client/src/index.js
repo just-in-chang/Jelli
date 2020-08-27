@@ -1,22 +1,25 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { App, HeaderBar } from "./App";
+import { User } from "./user.js";
 import { handleLogin, handleRegister } from "./crud_api";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
+
+const cookies = new Cookies();
 
 function RegisterModal(props) {
     const [error, setError] = useState("");
 
     const success = (u) => {
         props.cookies.set("user", u, { path: "/" });
-        window.location = "/board";
+        props.redir(true);
     };
 
     const handleSubmit = async (e) => {
@@ -76,7 +79,7 @@ function LoginModal(props) {
 
     const success = (u) => {
         props.cookies.set("user", u, { path: "/" });
-        window.location = "/board";
+        props.redir(true);
     };
 
     const handleSubmit = (e) => {
@@ -123,6 +126,7 @@ function LoginModal(props) {
 function Login() {
     const [showRegister, setShowRegister] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     const handleCloseRegister = () => setShowRegister(false);
     const handleShowRegister = () => setShowRegister(true);
@@ -130,20 +134,24 @@ function Login() {
     const handleCloseLogin = () => setShowLogin(false);
     const handleShowLogin = () => setShowLogin(true);
 
-    const cookies = new Cookies();
+    useEffect(() => {
+        if (cookies.get("user") != null) setRedirect(true);
+    }, [cookies]);
 
     return (
         <div>
-            <HeaderBar />
+            {redirect ? <Redirect to="/user" /> : <HeaderBar />}
             <RegisterModal
                 show={showRegister}
                 onHide={handleCloseRegister}
                 cookies={cookies}
+                redir={setRedirect}
             />
             <LoginModal
                 show={showLogin}
                 onHide={handleCloseLogin}
                 cookies={cookies}
+                redir={setRedirect}
             />
             <div className="background">
                 <div className="rlButtons">
@@ -167,8 +175,13 @@ function Login() {
 
 ReactDOM.render(
     <Router>
-        <Route exact path="/" component={Login} />
-        <Route path="/board" component={App} />
+        <Route exact path="/" component={() => <Login cookies={cookies} />} />
+        <Route
+            exact
+            path="/user"
+            component={() => <User cookies={cookies} />}
+        />
+        <Route path="/board" component={() => <App cookies={cookies} />} />
     </Router>,
     document.getElementById("root")
 );

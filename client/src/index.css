@@ -1,6 +1,6 @@
 .background {
     background-color: rgb(255, 240, 209);
-    min-height: 94vh;
+    min-height: 95.5vh;
     min-width: 98vw;
     display: flex;
     justify-content: center;
@@ -8,7 +8,7 @@
 
 .rlButtons {
     width: 70vw;
-    height: 35vw;
+    height: 25vw;
     display: flex;
     align-items: stretch;
     justify-content: center;
