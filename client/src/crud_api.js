@@ -83,11 +83,6 @@ const addBoards = (id, star, board) => {
         });
 };
 
-/**
- * Creates a new board
- * @param {*} username Board's owner's username
- * @param {*} board Name of the new board
- */
 const newBoard = (id, board, star, error, starM, boardsM) => {
     const optionsGET = {
         method: "GET",

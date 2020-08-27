@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import Container from "react-bootstrap/Container";
 import { HeaderBar } from "./App";
 import { addBoards, newBoard } from "./crud_api";
 import "./user.css";
@@ -11,11 +12,12 @@ function AddBoardModal(props) {
     const [error, setError] = useState("");
 
     const successStar = (u) => {
-        props.newS(u);
+        props.star(u);
         props.onHide();
     };
 
     const successBoard = (u) => {
+        props.board();
         props.onHide();
     };
 
@@ -93,7 +95,7 @@ function User(props) {
 
     let newStar = (n) => {
         setStar(
-            star.push(
+            star.concat(
                 <Button className="green">
                     <h3>{n}</h3>
                 </Button>
@@ -103,7 +105,7 @@ function User(props) {
 
     let newBoard = (n) => {
         setBoards(
-            boards.push(
+            boards.concat(
                 <Button className="green">
                     <h3>{n}</h3>
                 </Button>
@@ -123,20 +125,23 @@ function User(props) {
                 show={showModal}
                 onHide={handleCloseModal}
                 cookies={cookies}
-                star={setStar}
-                board={setBoards}
+                star={newStar}
+                board={newBoard}
             />
             <HeaderBar />
-            <h1>
-                Boards
-                <Button className="add" onClick={handleShowModal}>
-                    +
-                </Button>
-            </h1>
-            <h2>Starred</h2>
-            <div className="backgroundU">{star}</div>
-            <h2>Other Boards</h2>
-            <div className="backgroundUU">{boards}</div>
+
+            <div className="bkgd">
+                <h1>
+                    Boards
+                    <Button className="add" onClick={handleShowModal}>
+                        +
+                    </Button>
+                </h1>
+                <h2>Starred</h2>
+                <Container className="backgroundU">{star}</Container>
+                <h2>Other Boards</h2>
+                <Container className="backgroundU">{boards}</Container>
+            </div>
         </div>
     );
 }

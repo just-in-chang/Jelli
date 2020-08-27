@@ -3,17 +3,14 @@
     max-width: 5vh;
 }
 
-.backgroundU {
+.bkgd {
     background-color: rgb(255, 240, 209);
-    min-width: 98vw;
-    display: flex;
-    justify-content: left;
-    flex-direction: row;
+    min-height: 92.2vh;
 }
-.backgroundUU {
-    background-color: rgb(255, 240, 209);
-    min-height: 64.6vh;
+
+.backgroundU {
     min-width: 98vw;
+    max-width: 98vw;
     display: flex;
     justify-content: left;
     flex-direction: row;
@@ -30,7 +27,9 @@
 .green:focus {
     margin: 3vh;
     padding: 0px !important;
+    min-height: 25vh;
     height: 25vh;
+    min-width: 25vh;
     width: 25vh;
     background-color: green;
     border-style: none !important;
@@ -52,14 +51,12 @@ h1 {
     text-align: center;
     padding: 3vh;
     margin: 0px;
-    background-color: rgb(255, 240, 209);
 }
 
 h2 {
     font-size: 4vh;
     padding: 2vh;
     margin: 0px;
-    background-color: rgb(255, 240, 209);
 }
 
 h3 {
