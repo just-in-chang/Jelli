@@ -12,28 +12,12 @@ function AddBoardModal(props) {
     const [error, setError] = useState("");
 
     const successStar = (u) => {
-        let tempRow = [];
-        for (let i = 0; i < u.length; i++) {
-            tempRow.push(u[i]);
-            if (i % 6 == 5) {
-                props.star(tempRow);
-                tempRow = [];
-            }
-        }
-        if (tempRow.length != 0) props.star(tempRow);
+        props.star(u);
         props.onHide();
     };
 
     const successBoard = (u) => {
-        let tempRow = [];
-        for (let i = 0; i < u.length; i++) {
-            tempRow.push(u[i]);
-            if (i % 6 == 5) {
-                props.board(tempRow);
-                tempRow = [];
-            }
-        }
-        if (tempRow.length != 0) props.board(tempRow);
+        props.board();
         props.onHide();
     };
 
@@ -95,9 +79,7 @@ function User(props) {
                     <h3>{n[i]}</h3>
                 </Button>
             );
-        setStar(
-            star.concat(<Container className="backgroundU">{stars}</Container>)
-        );
+        setStar(stars);
     };
 
     let addBoard = (n) => {
@@ -108,9 +90,7 @@ function User(props) {
                     <h3>{n[i]}</h3>
                 </Button>
             );
-        setBoards(
-            boards.concat(<Container className="backgroundU">{b}</Container>)
-        );
+        setBoards(b);
     };
 
     let newStar = (n) => {
@@ -158,9 +138,9 @@ function User(props) {
                     </Button>
                 </h1>
                 <h2>Starred</h2>
-                {star}
+                <Container className="backgroundU">{star}</Container>
                 <h2>Other Boards</h2>
-                {boards}
+                <Container className="backgroundU">{boards}</Container>
             </div>
         </div>
     );
