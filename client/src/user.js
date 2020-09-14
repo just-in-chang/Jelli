@@ -4,6 +4,7 @@ import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Container from "react-bootstrap/Container";
+import { Redirect } from "react-router-dom";
 import { HeaderBar } from "./App";
 import { addBoards, newBoard } from "./crud_api";
 import "./user.css";
@@ -67,15 +68,25 @@ function User(props) {
     const [star, setStar] = useState([]);
     const [boards, setBoards] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
+
+    let cookies = props.cookies;
 
     let addStar = (n) => {
         let stars = [];
         for (let i = 0; i < n.length; i++)
             stars.push(
-                <Button className="green">
+                <Button
+                    className="green"
+                    onClick={() => {
+                        cookies.set("board", n[i], { path: "/" });
+                        console.log(cookies.get("board"));
+                        setRedirect(true);
+                    }}
+                >
                     <h3>{n[i]}</h3>
                 </Button>
             );
@@ -86,7 +97,14 @@ function User(props) {
         let b = [];
         for (let i = 0; i < n.length; i++)
             b.push(
-                <Button className="green">
+                <Button
+                    className="green"
+                    onClick={() => {
+                        cookies.set("board", n[i], { path: "/" });
+                        console.log(cookies.get("board"));
+                        setRedirect(true);
+                    }}
+                >
                     <h3>{n[i]}</h3>
                 </Button>
             );
@@ -96,7 +114,14 @@ function User(props) {
     let newStar = (n) => {
         setStar(
             star.concat(
-                <Button className="green">
+                <Button
+                    className="green"
+                    onClick={() => {
+                        cookies.set("board", n, { path: "/" });
+                        console.log(cookies.get("board"));
+                        setRedirect(true);
+                    }}
+                >
                     <h3>{n}</h3>
                 </Button>
             )
@@ -106,14 +131,19 @@ function User(props) {
     let newBoard = (n) => {
         setBoards(
             boards.concat(
-                <Button className="green">
+                <Button
+                    className="green"
+                    onClick={() => {
+                        cookies.set("board", n, { path: "/" });
+                        console.log(cookies.get("board"));
+                        setRedirect(true);
+                    }}
+                >
                     <h3>{n}</h3>
                 </Button>
             )
         );
     };
-
-    let cookies = props.cookies;
 
     useEffect(() => addBoards(cookies.get("user"), addStar, addBoard), [
         cookies,
@@ -128,7 +158,7 @@ function User(props) {
                 star={newStar}
                 board={newBoard}
             />
-            <HeaderBar />
+            {redirect ? <Redirect to="/board" /> : <HeaderBar />}
 
             <div className="bkgd">
                 <h1>
