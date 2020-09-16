@@ -1,7 +1,5 @@
 .background {
     background-color: rgb(255, 240, 209);
-    min-height: 95.5vh;
-    min-width: 98vw;
     display: flex;
     justify-content: center;
 }

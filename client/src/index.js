@@ -6,7 +6,8 @@ import Modal from "react-bootstrap/Modal";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
-import { App, HeaderBar } from "./App";
+import { App } from "./App";
+import { HeaderBar } from "./header";
 import { User } from "./user.js";
 import { handleLogin, handleRegister } from "./crud_api";
 import "./index.css";
@@ -140,7 +141,11 @@ function Login() {
 
     return (
         <div>
-            {redirect ? <Redirect to="/user" /> : <HeaderBar />}
+            {redirect ? (
+                <Redirect to="/user" />
+            ) : (
+                <HeaderBar cookies={cookies} />
+            )}
             <RegisterModal
                 show={showRegister}
                 onHide={handleCloseRegister}

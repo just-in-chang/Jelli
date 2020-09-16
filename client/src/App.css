@@ -4,6 +4,10 @@
     min-width: 100vw;
 }
 
+.boardBg {
+    min-width: 100vw;
+}
+
 .navbar {
     background-color: rgb(255, 227, 170);
 }
@@ -28,7 +32,7 @@
     padding: 0;
     margin: 10px;
     float: left;
-    border-radius: 8px; 
+    border-radius: 8px;
     width: 30vw;
     max-width: 240px;
     min-width: 200px;
@@ -52,56 +56,73 @@
     background-color: white;
 }
 
-.red,
-.red:active,
-.red:focus {
+.redCard,
+.redCard:active,
+.redCard:focus {
     background-color: red;
 }
 
-.red:active,
-.red:hover {
+.redCard:active,
+.redCard:hover {
     color: red !important;
     background-color: white !important;
 }
 
-.orange,
-.orange:active,
-.orange:focus {
+.orangeCard,
+.orangeCard:active,
+.orangeCard:focus {
     background-color: orange;
 }
 
-.orange:active,
-.orange:hover {
+.orangeCard:active,
+.orangeCard:hover {
     color: orange !important;
     background-color: white !important;
 }
 
-.green,
-.green:active,
-.green:focus {
+.greenCard,
+.greenCard:active,
+.greenCard:focus {
     background-color: green;
 }
 
-.green:active,
-.green:hover {
+.greenCard:active,
+.greenCard:hover {
     color: green !important;
     background-color: white !important;
 }
 
-.blue,
-.blue:active,
-.blue:hover {
+.blueCard,
+.blueCard:active,
+.blueCard:hover {
     background-color: blue;
 }
 
-.indigo,
-.indigo:active,
-.indigo:hover {
+.blueCard:active,
+.blueCard:hover {
+    color: blue !important;
+    background-color: white !important;
+}
+
+.indigoCard,
+.indigoCard:active,
+.indigoCard:hover {
     background-color: indigo;
 }
 
-.violet,
-.violet:active,
-.violet:hover {
+.indigoCard:active,
+.indigoCard:hover {
+    color: indigo !important;
+    background-color: white !important;
+}
+.violetCard,
+.violetCard:active,
+.violetCard:hover {
     background-color: violet;
+}
+
+.violetCard:active,
+.violetCard:hover {
+    color: violet !important;
+    background-color: white !important;
 }

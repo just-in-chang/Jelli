@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Container from "react-bootstrap/Container";
 import { Redirect } from "react-router-dom";
-import { HeaderBar } from "./App";
+import { HeaderBar } from "./header";
 import { addBoards, newBoard } from "./crud_api";
 import "./user.css";
 
@@ -18,7 +18,7 @@ function AddBoardModal(props) {
     };
 
     const successBoard = (u) => {
-        props.board();
+        props.board(u);
         props.onHide();
     };
 
@@ -35,7 +35,8 @@ function AddBoardModal(props) {
             star,
             setError,
             successStar,
-            successBoard
+            successBoard,
+            props.cookies
         );
     };
 
@@ -82,12 +83,11 @@ function User(props) {
                 <Button
                     className="green"
                     onClick={() => {
-                        cookies.set("board", n[i], { path: "/" });
-                        console.log(cookies.get("board"));
+                        cookies.set("board", n[i].id, { path: "/" });
                         setRedirect(true);
                     }}
                 >
-                    <h3>{n[i]}</h3>
+                    <h3>{n[i].name}</h3>
                 </Button>
             );
         setStar(stars);
@@ -100,12 +100,11 @@ function User(props) {
                 <Button
                     className="green"
                     onClick={() => {
-                        cookies.set("board", n[i], { path: "/" });
-                        console.log(cookies.get("board"));
+                        cookies.set("board", n[i].id, { path: "/" });
                         setRedirect(true);
                     }}
                 >
-                    <h3>{n[i]}</h3>
+                    <h3>{n[i].name}</h3>
                 </Button>
             );
         setBoards(b);
@@ -117,8 +116,6 @@ function User(props) {
                 <Button
                     className="green"
                     onClick={() => {
-                        cookies.set("board", n, { path: "/" });
-                        console.log(cookies.get("board"));
                         setRedirect(true);
                     }}
                 >
@@ -134,8 +131,6 @@ function User(props) {
                 <Button
                     className="green"
                     onClick={() => {
-                        cookies.set("board", n, { path: "/" });
-                        console.log(cookies.get("board"));
                         setRedirect(true);
                     }}
                 >
@@ -158,7 +153,11 @@ function User(props) {
                 star={newStar}
                 board={newBoard}
             />
-            {redirect ? <Redirect to="/board" /> : <HeaderBar />}
+            {redirect ? (
+                <Redirect to="/board" />
+            ) : (
+                <HeaderBar cookies={cookies} />
+            )}
 
             <div className="bkgd">
                 <h1>

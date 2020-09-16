@@ -76,14 +76,14 @@ const addBoards = (id, star, board) => {
             let stars = [];
             let boards = [];
             for (let i = 0; i < r.length; i++)
-                if (r[i].star) stars.push(r[i].name);
-                else boards.push(r[i].name);
+                if (r[i].star) stars.push({ name: r[i].name, id: r[i].id });
+                else boards.push({ name: r[i].name, id: r[i].id });
             star(stars);
             board(boards);
         });
 };
 
-const newBoard = (id, board, star, error, starM, boardsM) => {
+const newBoard = (id, board, star, error, starM, boardsM, cookies) => {
     const optionsGET = {
         method: "GET",
     };
@@ -111,10 +111,17 @@ const newBoard = (id, board, star, error, starM, boardsM) => {
                 }),
             };
 
-            fetch(BOARDS_URL, optionsPOST).then((r) => {
-                if (star) return starM(board);
-                else return boardsM(board);
-            });
+            fetch(BOARDS_URL, optionsPOST)
+                .then((r) => {
+                    if (star) {
+                        starM(board);
+                        return r.json();
+                    } else {
+                        boardsM(board);
+                        return r.json();
+                    }
+                })
+                .then((r) => cookies.set("board", r.id, { path: "/" }));
         });
 };
 

@@ -1,0 +1,10 @@
+.navbar {
+    background-color: rgb(255, 227, 170);
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+p {
+    margin: 0px;
+}

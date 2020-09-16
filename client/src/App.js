@@ -1,32 +1,30 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import NavBar from "react-bootstrap/NavBar";
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Modal from "react-bootstrap/Modal";
+import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import "bootstrap/dist/css/bootstrap.min.css";
+import Modal from "react-bootstrap/Modal";
+import Row from "react-bootstrap/Row";
 import "./App.css";
+import { HeaderBar } from "./header";
 
-function App() {
-    let list = [];
-    for (let i = 0; i < 10; i++) list.push("hi");
+function App(props) {
+    let cookies = props.cookies;
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     return (
         <div className="background">
-            <div>
-                <HeaderBar/>
+            <div className="boardBg">
+                <HeaderBar cookies={cookies} />
                 <CardModal show={show} onHide={handleClose} />
                 <CreateCategory click={handleShow} />
                 <CreateCategory click={handleShow} />
             </div>
-            {list}
-            listhi penis
         </div>
     );
 }
@@ -73,7 +71,7 @@ function CreateCategory(props) {
         let cName = "task " + buttons[i].color;
         list.push(
             <Row className="rowmargin">
-                <Button className={cName} onClick={props.click}>
+                <Button className={cName + "Card"} onClick={props.click}>
                     {buttons[i].title}
                 </Button>
             </Row>
@@ -95,21 +93,4 @@ function CreateCategory(props) {
     );
 }
 
-function HeaderBar() {
-    return (
-        <NavBar variant="light" className="navbar">
-            <NavBar.Brand href="#">
-                <img
-                    src="jelli.png"
-                    width="30"
-                    height="26"
-                    className="d-inline-block align-top"
-                    alt="Jelli logo"
-                />
-                {"  "}Jelli
-            </NavBar.Brand>
-        </NavBar>
-    );
-}
-
-export {App,HeaderBar};
+export { App };
