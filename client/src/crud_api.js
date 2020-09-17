@@ -125,6 +125,66 @@ const newBoard = (id, board, star, error, starM, boardsM, cookies) => {
         });
 };
 
+const getCategories = (boardId, addCategory) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    let url = BOARDS_URL + boardId + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            let categoryList = r.categories;
+            let names = [];
+            let ids = [];
+            for (let i = 0; i < categoryList.length; i++) {
+                names.push(categoryList[i].name);
+                ids.push(categoryList[i].id);
+            }
+            addCategory(names, ids);
+        });
+};
+
+const getCards = (categoryId, addCard) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    let url = CATEGORIES_URL + categoryId + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            let cardList = r.cards;
+            let names = [];
+            let ids = [];
+            let colors = [];
+            let descriptions = [];
+            for (let i = 0; i < cardList.length; i++) {
+                names.push(cardList[i].title);
+                ids.push(cardList[i].id);
+                colors.push(cardList[i].color);
+                descriptions.push(cardList[i].description);
+            }
+            addCard(names, ids, colors, descriptions);
+        });
+};
+
+const getBoardName = (id, setB) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    let url = BOARDS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            return setB(r.name);
+        });
+};
+
 const getUser = () => {};
 
 /**
@@ -331,6 +391,9 @@ module.exports = {
     handleLogin,
     addBoards,
     newBoard,
+    getCategories,
+    getCards,
+    getBoardName,
 
     changePassword,
     getBoard,

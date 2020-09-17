@@ -12,6 +12,10 @@
     background-color: rgb(255, 227, 170);
 }
 
+.noBorder {
+    border-color: black !important;
+}
+
 .task,
 .task:focus {
     width: 100%;
@@ -56,73 +60,73 @@
     background-color: white;
 }
 
-.redCard,
-.redCard:active,
-.redCard:focus {
+.RedCard,
+.RedCard:active,
+.RedCard:focus {
     background-color: red;
 }
 
-.redCard:active,
-.redCard:hover {
+.RedCard:active,
+.RedCard:hover {
     color: red !important;
     background-color: white !important;
 }
 
-.orangeCard,
-.orangeCard:active,
-.orangeCard:focus {
+.OrangeCard,
+.OrangeCard:active,
+.OrangeCard:focus {
     background-color: orange;
 }
 
-.orangeCard:active,
-.orangeCard:hover {
+.OrangeCard:active,
+.OrangeCard:hover {
     color: orange !important;
     background-color: white !important;
 }
 
-.greenCard,
-.greenCard:active,
-.greenCard:focus {
+.GreenCard,
+.GreenCard:active,
+.GreenCard:focus {
     background-color: green;
 }
 
-.greenCard:active,
-.greenCard:hover {
+.GreenCard:active,
+.GreenCard:hover {
     color: green !important;
     background-color: white !important;
 }
 
-.blueCard,
-.blueCard:active,
-.blueCard:hover {
+.BlueCard,
+.BlueCard:active,
+.BlueCard:hover {
     background-color: blue;
 }
 
-.blueCard:active,
-.blueCard:hover {
+.BlueCard:active,
+.BlueCard:hover {
     color: blue !important;
     background-color: white !important;
 }
 
-.indigoCard,
-.indigoCard:active,
-.indigoCard:hover {
+.IndigoCard,
+.IndigoCard:active,
+.IndigoCard:hover {
     background-color: indigo;
 }
 
-.indigoCard:active,
-.indigoCard:hover {
+.IndigoCard:active,
+.IndigoCard:hover {
     color: indigo !important;
     background-color: white !important;
 }
-.violetCard,
-.violetCard:active,
-.violetCard:hover {
+.VioletCard,
+.VioletCard:active,
+.VioletCard:hover {
     background-color: violet;
 }
 
-.violetCard:active,
-.violetCard:hover {
+.VioletCard:active,
+.VioletCard:hover {
     color: violet !important;
     background-color: white !important;
 }
