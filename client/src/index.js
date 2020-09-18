@@ -140,34 +140,34 @@ function Login() {
     }, [cookies]);
 
     return (
-        <div>
-            {redirect ? (
-                <Redirect to="/user" />
-            ) : (
-                <HeaderBar cookies={cookies} />
-            )}
-            <RegisterModal
-                show={showRegister}
-                onHide={handleCloseRegister}
-                cookies={cookies}
-                redir={setRedirect}
-            />
-            <LoginModal
-                show={showLogin}
-                onHide={handleCloseLogin}
-                cookies={cookies}
-                redir={setRedirect}
-            />
-            <div className="background">
-                <div className="rlButtons">
+        <div className="background">
+            <div className="boardBg">
+                {redirect ? (
+                    <Redirect to="/user" />
+                ) : (
+                    <HeaderBar cookies={cookies} />
+                )}
+                <RegisterModal
+                    show={showRegister}
+                    onHide={handleCloseRegister}
+                    cookies={cookies}
+                    redir={setRedirect}
+                />
+                <LoginModal
+                    show={showLogin}
+                    onHide={handleCloseLogin}
+                    cookies={cookies}
+                    redir={setRedirect}
+                />
+                <div className="buttonBox">
                     <Button
-                        className="indigo task rlButton"
+                        className="indigo rlButton"
                         onClick={handleShowRegister}
                     >
                         Register
                     </Button>
                     <Button
-                        className="orange task rlButton"
+                        className="orange rlButton"
                         onClick={handleShowLogin}
                     >
                         Login

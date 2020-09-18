@@ -25,7 +25,7 @@
 .green,
 .green:active,
 .green:focus {
-    margin: 3vh;
+    margin: 2vh;
     padding: 0px !important;
     min-height: 25vh;
     height: 25vh;
@@ -49,13 +49,14 @@
 h1 {
     font-size: 5vh;
     text-align: center;
-    padding: 3vh;
+    padding-top: 3vh;
+    padding-bottom: 0vh;
     margin: 0px;
 }
 
 h2 {
     font-size: 4vh;
-    padding: 2vh;
+    padding-left: 3vh;
     margin: 0px;
 }
 

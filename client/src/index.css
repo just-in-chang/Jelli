@@ -4,21 +4,21 @@
     justify-content: center;
 }
 
-.rlButtons {
-    width: 70vw;
-    height: 25vw;
+.buttonBox {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
-    flex-direction: row;
-    margin: 15vh;
+    height: 60vh;
 }
 
 .rlButton {
+    width: 30vw;
+    height: 20vw;
+    border: none !important;
     align-items: stretch;
     text-align: center;
-    font-size: 5vh;
-    margin: 5vh;
+    font-size: 3vw;
+    margin: 5vw;
 }
 
 .orange,

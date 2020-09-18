@@ -51,6 +51,14 @@ function App(props) {
 }
 
 function CardModal(props) {
+    const [description, setDescription] = useState(props.description);
+
+    const handleSubmit = (color, description) => {
+        props.newColor(color);
+        props.newDescription(description);
+        props.setDescription(description);
+    };
+
     return (
         <Modal {...props}>
             <Modal.Header closeButton>{props.title}</Modal.Header>
@@ -81,7 +89,7 @@ function CardModal(props) {
                     <Form.Group controlId="testform">
                         <Form.Label>Description</Form.Label>
                         <Form.Control as="textarea" rows="5">
-                            {props.description}
+                            {description}
                         </Form.Control>
                     </Form.Group>
                 </Form>
@@ -169,7 +177,6 @@ function ACard(props) {
                 onHide={handleClose}
                 title={title}
                 description={description}
-                newTitle={setTitle}
                 newColor={setColor}
                 newDescription={setDescription}
             />

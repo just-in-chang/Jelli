@@ -145,31 +145,33 @@ function User(props) {
     ]);
 
     return (
-        <div>
-            <AddBoardModal
-                show={showModal}
-                onHide={handleCloseModal}
-                cookies={cookies}
-                star={newStar}
-                board={newBoard}
-            />
-            {redirect ? (
-                <Redirect to="/board" />
-            ) : (
-                <HeaderBar cookies={cookies} />
-            )}
+        <div className="background">
+            <div className="boardBg">
+                {redirect ? (
+                    <Redirect to="/board" />
+                ) : (
+                    <HeaderBar cookies={cookies} />
+                )}
+                <AddBoardModal
+                    show={showModal}
+                    onHide={handleCloseModal}
+                    cookies={cookies}
+                    star={newStar}
+                    board={newBoard}
+                />
 
-            <div className="bkgd">
-                <h1>
-                    Boards
-                    <Button className="add" onClick={handleShowModal}>
-                        +
-                    </Button>
-                </h1>
-                <h2>Starred</h2>
-                <Container className="backgroundU">{star}</Container>
-                <h2>Other Boards</h2>
-                <Container className="backgroundU">{boards}</Container>
+                <div className="bkgd">
+                    <h1>
+                        Boards
+                        <Button className="add" onClick={handleShowModal}>
+                            +
+                        </Button>
+                    </h1>
+                    <h2>Starred</h2>
+                    <Container className="backgroundU">{star}</Container>
+                    <h2>Other Boards</h2>
+                    <Container className="backgroundU">{boards}</Container>
+                </div>
             </div>
         </div>
     );
