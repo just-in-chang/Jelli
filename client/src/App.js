@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import "./App.css";
-import { getCategories, getCards, getBoardName } from "./crud_api";
+import { getCategories, getCards, getBoardName, changeCard } from "./crud_api";
 import { HeaderBar } from "./header";
 
 function App(props) {
@@ -51,19 +51,24 @@ function App(props) {
 }
 
 function CardModal(props) {
-    const [description, setDescription] = useState(props.description);
+    const handleSubmit = (e) => {
+        let color = e.target.color.value.charAt(0).toLowerCase();
+        let description = e.target.description.value;
 
-    const handleSubmit = (color, description) => {
-        props.newColor(color);
+        e.stopPropagation();
+        e.preventDefault();
+
+        props.newColor(toColor(color));
         props.newDescription(description);
-        props.setDescription(description);
+        changeCard(props.id, props.title, color, description, props.categoryId);
+        return props.onHide();
     };
 
     return (
         <Modal {...props}>
-            <Modal.Header closeButton>{props.title}</Modal.Header>
-            <Modal.Body>
-                <Form>
+            <form onSubmit={handleSubmit}>
+                <Modal.Header closeButton>{props.title}</Modal.Header>
+                <Modal.Body>
                     <Form.Group controlId="testformcolor">
                         <Col>
                             <Row>
@@ -72,9 +77,9 @@ function CardModal(props) {
                             <Row>
                                 <Form.Control
                                     as="select"
-                                    placeholder={props.color}
+                                    defaultValue={props.color}
+                                    name="color"
                                 >
-                                    <option>...</option>
                                     <option>Red</option>
                                     <option>Orange</option>
                                     <option>Yellow</option>
@@ -88,18 +93,17 @@ function CardModal(props) {
                     </Form.Group>
                     <Form.Group controlId="testform">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" rows="5">
-                            {description}
+                        <Form.Control as="textarea" rows="5" name="description">
+                            {props.description}
                         </Form.Control>
                     </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary">Submit</Button>
-                <Button variant="secondary" onClick={props.onHide}>
-                    Close
-                </Button>
-            </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </form>
         </Modal>
     );
 }
@@ -113,6 +117,7 @@ function CreateCategory(props) {
             cardArray.push(
                 <Row className="rowmargin">
                     <ACard
+                        categoryId={props.id}
                         c={colors[i]}
                         title={names[i]}
                         id={ids[i]}
@@ -142,28 +147,8 @@ function CreateCategory(props) {
 }
 
 function ACard(props) {
-    const toColor = (char) => {
-        switch (char) {
-            case "r":
-                return "Red";
-            case "o":
-                return "Orange";
-            case "y":
-                return "Yellow";
-            case "g":
-                return "Green";
-            case "b":
-                return "Blue";
-            case "i":
-                return "Indigo";
-            case "v":
-                return "Violet";
-        }
-    };
-
     const [show, setShow] = useState(false);
 
-    const [title, setTitle] = useState(props.title);
     const [color, setColor] = useState(toColor(props.c).toString());
     const [description, setDescription] = useState(props.description);
 
@@ -174,17 +159,38 @@ function ACard(props) {
         <div>
             <CardModal
                 show={show}
+                id={props.id}
+                categoryId={props.categoryId}
                 onHide={handleClose}
-                title={title}
+                title={props.title}
                 description={description}
                 newColor={setColor}
                 newDescription={setDescription}
             />
             <Button className={color + "Card noBorder"} onClick={handleShow}>
-                {title}
+                {props.title}
             </Button>
         </div>
     );
 }
+
+const toColor = (char) => {
+    switch (char) {
+        case "r":
+            return "Red";
+        case "o":
+            return "Orange";
+        case "y":
+            return "Yellow";
+        case "g":
+            return "Green";
+        case "b":
+            return "Blue";
+        case "i":
+            return "Indigo";
+        case "v":
+            return "Violet";
+    }
+};
 
 export { App };

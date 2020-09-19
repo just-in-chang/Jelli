@@ -185,6 +185,25 @@ const getBoardName = (id, setB) => {
         });
 };
 
+const changeCard = (id, title, color, description, category) => {
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            title: title,
+            description: description,
+            color: color,
+            category: category,
+        }),
+    };
+    let url = CARDS_URL + id + "/";
+    fetch(url, optionsPUT).then((r) => {
+        return r.json();
+    });
+};
+
 const getUser = () => {};
 
 /**
@@ -394,6 +413,7 @@ module.exports = {
     getCategories,
     getCards,
     getBoardName,
+    changeCard,
 
     changePassword,
     getBoard,
