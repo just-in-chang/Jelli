@@ -1,3 +1,27 @@
+.addcard {
+    border: none;
+    height: 4.5vh;
+    width: 4.5vh;
+    background: url("/plus.png") no-repeat;
+    background-size: 100%;
+}
+
+.deleteCategory {
+    border: none;
+    height: 4.5vh;
+    width: 4.5vh;
+    background: url("/trash.png") no-repeat;
+    background-size: 100%;
+}
+
+.editCategory {
+    border: none;
+    height: 4.5vh;
+    width: 4.5vh;
+    background: url("/pencil.png") no-repeat;
+    background-size: 100%;
+}
+
 .background {
     background-color: rgb(255, 240, 209);
     min-height: 100vh;
@@ -8,12 +32,24 @@
     min-width: 100vw;
 }
 
-.navbar {
-    background-color: rgb(255, 227, 170);
+.categoryHeader {
+    border: none;
+    font-size: 2.5vh;
+    background-color: lightslategray;
+    display: flex;
+    color: white;
 }
 
-.noBorder {
-    border-color: black !important;
+.categoryHeader2 {
+    background-color: lightslategray;
+}
+
+.categoryBody {
+    background-color: rgb(230, 230, 230);
+}
+
+.navbar {
+    background-color: rgb(255, 227, 170);
 }
 
 .task,
@@ -37,13 +73,7 @@
     margin: 10px;
     float: left;
     border-radius: 8px;
-    width: 30vw;
-    max-width: 240px;
-    min-width: 200px;
-}
-
-.addcard {
-    /* float: right; */
+    width: 15vw;
 }
 
 .rowmargin {
@@ -57,13 +87,14 @@
 }
 
 .none {
-    background-color: white;
+    background-color: white !important;
 }
 
 .RedCard,
 .RedCard:active,
 .RedCard:focus {
-    background-color: red;
+    background-color: red !important;
+    border: none !important;
 }
 
 .RedCard:active,
@@ -75,7 +106,8 @@
 .OrangeCard,
 .OrangeCard:active,
 .OrangeCard:focus {
-    background-color: orange;
+    background-color: orange !important;
+    border: none !important;
 }
 
 .OrangeCard:active,
@@ -87,7 +119,8 @@
 .GreenCard,
 .GreenCard:active,
 .GreenCard:focus {
-    background-color: green;
+    background-color: green !important;
+    border: none !important;
 }
 
 .GreenCard:active,
@@ -99,7 +132,8 @@
 .BlueCard,
 .BlueCard:active,
 .BlueCard:hover {
-    background-color: blue;
+    background-color: blue !important;
+    border: none !important;
 }
 
 .BlueCard:active,
@@ -111,7 +145,8 @@
 .IndigoCard,
 .IndigoCard:active,
 .IndigoCard:hover {
-    background-color: indigo;
+    background-color: indigo !important;
+    border: none !important;
 }
 
 .IndigoCard:active,
@@ -122,7 +157,8 @@
 .VioletCard,
 .VioletCard:active,
 .VioletCard:hover {
-    background-color: violet;
+    background-color: violet !important;
+    border: none !important;
 }
 
 .VioletCard:active,

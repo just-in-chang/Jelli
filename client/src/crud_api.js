@@ -161,12 +161,13 @@ const getCards = (categoryId, addCard) => {
             let ids = [];
             let colors = [];
             let descriptions = [];
-            for (let i = 0; i < cardList.length; i++) {
-                names.push(cardList[i].title);
-                ids.push(cardList[i].id);
-                colors.push(cardList[i].color);
-                descriptions.push(cardList[i].description);
-            }
+            if (cardList != undefined)
+                for (let i = 0; i < cardList.length; i++) {
+                    names.push(cardList[i].title);
+                    ids.push(cardList[i].id);
+                    colors.push(cardList[i].color);
+                    descriptions.push(cardList[i].description);
+                }
             addCard(names, ids, colors, descriptions);
         });
 };
@@ -202,6 +203,70 @@ const changeCard = (id, title, color, description, category) => {
     fetch(url, optionsPUT).then((r) => {
         return r.json();
     });
+};
+
+const deleteCard = (id) => {
+    const optionsDELETE = {
+        method: "DELETE",
+    };
+    let url = CARDS_URL + id + "/";
+    return fetch(url, optionsDELETE);
+};
+
+const newCard = (title, color, description, category, position, method) => {
+    const optionsPOST = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            title: title,
+            description: description,
+            color: color,
+            category: category,
+            position: position,
+        }),
+    };
+    let url = CARDS_URL;
+    fetch(url, optionsPOST)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            return method(title, color, description, r.id);
+        });
+};
+
+const deleteCategory = (id) => {
+    const optionsDELETE = {
+        method: "DELETE",
+    };
+    let url = CATEGORIES_URL + id + "/";
+    return fetch(url, optionsDELETE);
+};
+
+const newCategory = (title, board, position, method) => {
+    const optionsPOST = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: title,
+            board: board,
+            position: position,
+            cards: [],
+        }),
+    };
+    console.log(optionsPOST.body);
+    let url = CATEGORIES_URL;
+    fetch(url, optionsPOST)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            return method(title, r.id);
+        });
 };
 
 const getUser = () => {};
@@ -289,26 +354,6 @@ const getCategory = (id) => {
 };
 
 /**
- * Creates a new category
- * @param {*} boardId Category's board's id
- * @param {*} category Name of the new category
- */
-const newCategory = (boardId, category) => {
-    let http = new XMLHttpRequest();
-    let board = getBoard(boardId);
-    let doc = {
-        name: category,
-        board: boardId,
-        position: board.categories.length,
-        cards: [],
-    };
-    http.open("POST", CATEGORIES_URL, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(doc));
-    return http.responseText;
-};
-
-/**
  * Changes info of category; use `null` if data not changed
  * @param {*} id Id of category to change
  * @param {*} name New name of category
@@ -327,18 +372,6 @@ const editCategory = (id, name, position) => {
 };
 
 /**
- * Deletes a category
- * @param {*} id Id of category to delete
- */
-const deleteCategory = (id) => {
-    let http = new XMLHttpRequest();
-    let url = CATEGORIES_URL + id + "/";
-    http.open("DELETE", url, false);
-    http.send(null);
-    return http.responseText;
-};
-
-/**
  * Returns JSON with data of card
  * @param {*} id Id of the card
  */
@@ -347,27 +380,6 @@ const getCard = (id) => {
     let url = CARDS_URL + id + "/";
     http.open("GET", url, false);
     http.send(null);
-    return http.responseText;
-};
-
-/**
- * Creates a new card
- * @param {*} categoryId Card's owner's username
- * @param {*} card Name of the new card
- */
-const newCard = (categoryId, card) => {
-    let http = new XMLHttpRequest();
-    let category = getCategory(categoryId);
-    let doc = {
-        title: card,
-        description: "",
-        color: "white",
-        category: categoryId,
-        position: category.cards.length,
-    };
-    http.open("POST", CARDS_URL, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(doc));
     return http.responseText;
 };
 
@@ -393,18 +405,6 @@ const editCard = (id, title, description, color, position) => {
     return http.responseText;
 };
 
-/**
- * Deletes a card
- * @param {*} id Id of card to delete
- */
-const deleteCard = (id) => {
-    let http = new XMLHttpRequest();
-    let url = CARDS_URL + id + "/";
-    http.open("DELETE", url, false);
-    http.send(null);
-    return http.responseText;
-};
-
 module.exports = {
     handleRegister,
     handleLogin,
@@ -414,17 +414,17 @@ module.exports = {
     getCards,
     getBoardName,
     changeCard,
+    deleteCard,
+    newCard,
+    deleteCategory,
+    newCategory,
 
     changePassword,
     getBoard,
     editBoard,
     deleteBoard,
     getCategory,
-    newCategory,
     editCategory,
-    deleteCategory,
     getCard,
-    newCard,
     editCard,
-    deleteCard,
 };
