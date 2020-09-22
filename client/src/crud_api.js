@@ -269,6 +269,14 @@ const newCategory = (title, board, position, method) => {
         });
 };
 
+const deleteBoard = (id) => {
+    const optionsDELETE = {
+        method: "DELETE",
+    };
+    let url = BOARDS_URL + id + "/";
+    return fetch(url, optionsDELETE);
+};
+
 const getUser = () => {};
 
 /**
@@ -326,18 +334,6 @@ const editBoard = (id, name, position, star) => {
     http.open("PUT", url, false);
     http.setRequestHeader("Content-Type", "application/json");
     http.send(JSON.stringify(board));
-    return http.responseText;
-};
-
-/**
- * Deletes a board
- * @param {*} id Id of board to delete
- */
-const deleteBoard = (id) => {
-    let http = new XMLHttpRequest();
-    let url = BOARDS_URL + id + "/";
-    http.open("DELETE", url, false);
-    http.send(null);
     return http.responseText;
 };
 
@@ -418,11 +414,11 @@ module.exports = {
     newCard,
     deleteCategory,
     newCategory,
+    deleteBoard,
 
     changePassword,
     getBoard,
     editBoard,
-    deleteBoard,
     getCategory,
     editCategory,
     getCard,

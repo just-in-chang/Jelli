@@ -6,15 +6,17 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import { Redirect } from "react-router-dom";
 import "./App.css";
 import {
     changeCard,
+    deleteBoard,
     deleteCard,
+    deleteCategory,
     getBoardName,
     getCards,
     getCategories,
     newCard,
-    deleteCategory,
     newCategory,
 } from "./crud_api";
 import { HeaderBar } from "./header";
@@ -25,6 +27,8 @@ function App(props) {
     const [categories, setCategories] = useState([]);
     const [b, setB] = useState("");
     const [newCategoryModalShow, setNewCategoryModalShow] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [backUser, setBackUser] = useState(false);
 
     const addCategory = (n, i) => {
         let categoryArray = [];
@@ -55,27 +59,61 @@ function App(props) {
 
     return (
         <div className="background">
+            {backUser ? <Redirect to="/user" /> : null}
+            <NewCategoryModal
+                show={newCategoryModalShow}
+                position={categories.length}
+                boardId={cookies.get("board")}
+                newCategory={newCategoryMethod}
+                onHide={() => setNewCategoryModalShow(false)}
+            />
+            <ConfirmDeleteModal
+                show={confirmDelete}
+                boardId={cookies.get("board")}
+                redir={setBackUser}
+                onHide={() => setConfirmDelete(false)}
+            />
             <div className="boardBg">
                 <HeaderBar cookies={cookies} />
-                <h1 className="justify-content-between">
-                    <NewCategoryModal
-                        show={newCategoryModalShow}
-                        position={categories.length}
-                        boardId={cookies.get("board")}
-                        newCategory={newCategoryMethod}
-                        onHide={() => setNewCategoryModalShow(false)}
-                    />
-                    {b}
+                <h1 className="justify-content-between">{b}</h1>
+                <div className="buttonDiv">
                     <Button
-                        className="add"
+                        className="addButton"
+                        variant="secondary"
                         onClick={() => setNewCategoryModalShow(true)}
-                    >
-                        +
-                    </Button>
-                </h1>
+                    />
+                    <Button
+                        className="deleteButton"
+                        variant="secondary"
+                        onClick={() => setConfirmDelete(true)}
+                    />
+                </div>
                 {categories}
             </div>
         </div>
+    );
+}
+
+function ConfirmDeleteModal(props) {
+    const handleSubmit = (e) => {
+        deleteBoard(props.boardId);
+        props.redir(true);
+    };
+
+    return (
+        <Modal {...props}>
+            <form onSubmit={handleSubmit}>
+                <Modal.Header closeButton>Confirm Delete Board?</Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" type="submit">
+                        Submit
+                    </Button>
+                    <Button variant="secondary" onClick={() => props.onHide()}>
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </form>
+        </Modal>
     );
 }
 
@@ -255,6 +293,7 @@ function CreateCategory(props) {
     let [showCategory, setShowCategory] = useState(true);
     let [cards, setCards] = useState([]);
     let [showNewCardModal, setShowNewCardModal] = useState(false);
+    let [showEditCategory, setEditCategory] = useState(false);
 
     const addCard = (names, ids, colors, descriptions) => {
         let cardArray = [];
@@ -292,7 +331,7 @@ function CreateCategory(props) {
 
     useEffect(() => getCards(props.id, addCard), [props.cookies]);
 
-    return (
+    return showCategory ? (
         <div>
             <NewCardModal
                 show={showNewCardModal}
@@ -301,37 +340,35 @@ function CreateCategory(props) {
                 categoryId={props.id}
                 position={cards.length}
             />
-            {showCategory ? (
-                <Card className="container">
-                    <Card.Header className="categoryHeader">
-                        <div>{props.title}</div>
-                    </Card.Header>
-                    <Card.Header className="categoryHeader2">
-                        <Button
-                            variant="secondary"
-                            className="addcard float-right"
-                            onClick={() => setShowNewCardModal(true)}
-                        />
-                        <Button
-                            variant="secondary"
-                            className="deleteCategory float-right"
-                            onClick={() => {
-                                setShowCategory(false);
-                                deleteCategory(props.id);
-                            }}
-                        />
-                        <Button
-                            variant="secondary"
-                            className="editCategory float-right"
-                        />
-                    </Card.Header>
-                    <Card.Body className="text-center categoryBody">
-                        <Container fluid>{cards}</Container>
-                    </Card.Body>
-                </Card>
-            ) : null}
+            <Card className="container">
+                <Card.Header className="categoryHeader">
+                    <div>{props.title}</div>
+                </Card.Header>
+                <Card.Header className="categoryHeader2">
+                    <Button
+                        variant="secondary"
+                        className="addButton float-right"
+                        onClick={() => setShowNewCardModal(true)}
+                    />
+                    <Button
+                        variant="secondary"
+                        className="deleteButton float-right"
+                        onClick={() => {
+                            setShowCategory(false);
+                            deleteCategory(props.id);
+                        }}
+                    />
+                    <Button
+                        variant="secondary"
+                        className="editButton float-right"
+                    />
+                </Card.Header>
+                <Card.Body className="text-center categoryBody">
+                    <Container fluid>{cards}</Container>
+                </Card.Body>
+            </Card>
         </div>
-    );
+    ) : null;
 }
 
 function ACard(props) {

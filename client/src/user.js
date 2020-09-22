@@ -148,7 +148,7 @@ function User(props) {
         <div className="background">
             <div className="boardBg">
                 {redirect ? (
-                    <Redirect to="/board" />
+                    <Redirect to={"/board"} />
                 ) : (
                     <HeaderBar cookies={cookies} />
                 )}

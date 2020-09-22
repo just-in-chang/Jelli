@@ -1,4 +1,4 @@
-.addcard {
+.addButton {
     border: none;
     height: 4.5vh;
     width: 4.5vh;
@@ -6,7 +6,7 @@
     background-size: 100%;
 }
 
-.deleteCategory {
+.deleteButton {
     border: none;
     height: 4.5vh;
     width: 4.5vh;
@@ -14,12 +14,17 @@
     background-size: 100%;
 }
 
-.editCategory {
+.editButton {
     border: none;
     height: 4.5vh;
     width: 4.5vh;
     background: url("/pencil.png") no-repeat;
     background-size: 100%;
+}
+
+.buttonDiv {
+    display: flex;
+    justify-content: center;
 }
 
 .background {
