@@ -26,16 +26,17 @@ const handleRegister = (username, password, error, success) => {
     fetch(USERS_URL, optionsGET)
         .then((r) => r.json())
         .then((r) => {
-            let id = 0;
+            let id = -1;
             for (let i = 0; i < r.length; i++) {
-                id = r[i].id;
                 if (r[i].username == username) return r[i].id;
             }
             return id;
         })
         .then((r) => {
-            if (r > 0) return error("This username has already been taken");
-            else {
+            if (r > 0) {
+                console.log(r);
+                return error("This username has already been taken");
+            } else {
                 fetch(USERS_URL, optionsPOST);
                 error("");
                 return success(r);
@@ -75,9 +76,10 @@ const addBoards = (id, star, board) => {
         .then((r) => {
             let stars = [];
             let boards = [];
-            for (let i = 0; i < r.length; i++)
-                if (r[i].star) stars.push({ name: r[i].name, id: r[i].id });
-                else boards.push({ name: r[i].name, id: r[i].id });
+            if (r != undefined)
+                for (let i = 0; i < r.length; i++)
+                    if (r[i].star) stars.push({ name: r[i].name, id: r[i].id });
+                    else boards.push({ name: r[i].name, id: r[i].id });
             star(stars);
             board(boards);
         });
@@ -214,6 +216,7 @@ const deleteCard = (id) => {
 };
 
 const newCard = (title, color, description, category, position, method) => {
+    if (description == undefined || description.length <= 0) description = "♥";
     const optionsPOST = {
         method: "POST",
         headers: {
@@ -277,6 +280,45 @@ const deleteBoard = (id) => {
     return fetch(url, optionsDELETE);
 };
 
+const editCategory = (id, title, boardId) => {
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: title,
+            board: boardId,
+            cards: [],
+        }),
+    };
+
+    let url = CATEGORIES_URL + id + "/";
+    fetch(url, optionsPUT).then((r) => {
+        return r.json();
+    });
+};
+
+const editBoard = (id, title, star, userId) => {
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: title,
+            owner: userId,
+            star: star,
+            categories: [],
+        }),
+    };
+
+    let url = BOARDS_URL + id + "/";
+    fetch(url, optionsPUT).then((r) => {
+        return r.json();
+    });
+};
+
 const getUser = () => {};
 
 /**
@@ -318,26 +360,6 @@ const getBoard = (id) => {
 };
 
 /**
- * Changes info of board; use `null` if data not changed
- * @param {*} id Id of board to change
- * @param {*} name New name of board
- * @param {*} position New position of board
- * @param {*} star `true` if the board starred
- */
-const editBoard = (id, name, position, star) => {
-    let http = new XMLHttpRequest();
-    let board = getBoard(id);
-    let url = BOARDS_URL + id + "/";
-    if (name != null) board.name = name;
-    if (position != null) board.position = position;
-    if (star != null) board.star = star;
-    http.open("PUT", url, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(board));
-    return http.responseText;
-};
-
-/**
  * Returns JSON with data of category
  * @param {*} id Id of the category
  */
@@ -346,24 +368,6 @@ const getCategory = (id) => {
     let url = CATEGORIES_URL + id + "/";
     http.open("GET", url, false);
     http.send(null);
-    return http.responseText;
-};
-
-/**
- * Changes info of category; use `null` if data not changed
- * @param {*} id Id of category to change
- * @param {*} name New name of category
- * @param {*} position New position of category
- */
-const editCategory = (id, name, position) => {
-    let http = new XMLHttpRequest();
-    let category = getCategory(id);
-    let url = CATEGORIES_URL + id + "/";
-    if (name != null) category.name = name;
-    if (position != null) category.position = position;
-    http.open("PUT", url, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(category));
     return http.responseText;
 };
 
@@ -415,12 +419,12 @@ module.exports = {
     deleteCategory,
     newCategory,
     deleteBoard,
+    editCategory,
 
     changePassword,
     getBoard,
     editBoard,
     getCategory,
-    editCategory,
     getCard,
     editCard,
 };

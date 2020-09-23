@@ -18,6 +18,8 @@ import {
     getCategories,
     newCard,
     newCategory,
+    editCategory,
+    editBoard,
 } from "./crud_api";
 import { HeaderBar } from "./header";
 
@@ -29,6 +31,8 @@ function App(props) {
     const [newCategoryModalShow, setNewCategoryModalShow] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [backUser, setBackUser] = useState(false);
+    const [editBoardShow, setEditBoardShow] = useState(false);
+    const [starred, setStarred] = useState(cookies.get("star"));
 
     const addCategory = (n, i) => {
         let categoryArray = [];
@@ -60,6 +64,17 @@ function App(props) {
     return (
         <div className="background">
             {backUser ? <Redirect to="/user" /> : null}
+            <EditBoardModal
+                show={editBoardShow}
+                title={b}
+                changeTitle={setB}
+                star={starred}
+                changeStar={setStarred}
+                id={cookies.get("board")}
+                userId={cookies.get("user")}
+                onHide={() => setEditBoardShow(false)}
+                cookies={cookies}
+            />
             <NewCategoryModal
                 show={newCategoryModalShow}
                 position={categories.length}
@@ -81,6 +96,11 @@ function App(props) {
                         className="addButton"
                         variant="secondary"
                         onClick={() => setNewCategoryModalShow(true)}
+                    />
+                    <Button
+                        className="editButton"
+                        variant="secondary"
+                        onClick={() => setEditBoardShow(true)}
                     />
                     <Button
                         className="deleteButton"
@@ -289,25 +309,118 @@ function NewCategoryModal(props) {
     );
 }
 
+function EditCategoryModal(props) {
+    const [error, setError] = useState("");
+    const handleSubmit = (e) => {
+        let title = e.target.title.value;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (title.length > 0) {
+            editCategory(props.id, title, props.boardId);
+            props.changeTitle(title);
+            return props.onHide();
+        } else setError("Please insert title!");
+    };
+
+    return (
+        <Modal {...props}>
+            <form onSubmit={handleSubmit}>
+                <Modal.Header closeButton>
+                    Edit {props.title} Category
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group controlId="testformcolor">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control as="textarea" rows="1" name="title">
+                            {props.title}
+                        </Form.Control>
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="errorMessage">{error}</div>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </form>
+        </Modal>
+    );
+}
+
+function EditBoardModal(props) {
+    console.log(props);
+    const [error, setError] = useState("");
+
+    const handleSubmit = (e) => {
+        let title = e.target.title.value;
+        let star = e.target.star.checked;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (title.length > 0) {
+            editBoard(props.id, title, star, props.userId);
+            props.changeTitle(title);
+            props.cookies.set("star", star, { path: "/" });
+            props.changeStar(star ? "true" : "false");
+            return props.onHide();
+        }
+        return setError("Please insert title!");
+    };
+
+    return (
+        <Modal {...props}>
+            <form onSubmit={handleSubmit}>
+                <Modal.Header closeButton>
+                    Edit {props.title} Board
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control as="textarea" rows="1" name="title">
+                            {props.title}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Star</Form.Label>
+                        <Form.Control
+                            name="star"
+                            type="checkbox"
+                            defaultChecked={props.star == "true" ? true : false}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <p className="error">{error}</p>
+                    <Button variant="primary" type="submit" className="submit">
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </form>
+        </Modal>
+    );
+}
+
 function CreateCategory(props) {
     let [showCategory, setShowCategory] = useState(true);
     let [cards, setCards] = useState([]);
     let [showNewCardModal, setShowNewCardModal] = useState(false);
     let [showEditCategory, setEditCategory] = useState(false);
+    let [categoryTitle, setCategoryTitle] = useState(props.title);
 
     const addCard = (names, ids, colors, descriptions) => {
         let cardArray = [];
         for (let i = 0; i < names.length; i++) {
             cardArray.push(
-                <Row className="rowmargin">
-                    <ACard
-                        categoryId={props.id}
-                        c={colors[i]}
-                        title={names[i]}
-                        id={ids[i]}
-                        description={descriptions[i]}
-                    />
-                </Row>
+                <ACard
+                    categoryId={props.id}
+                    c={colors[i]}
+                    title={names[i]}
+                    id={ids[i]}
+                    description={descriptions[i]}
+                />
             );
         }
         setCards(cardArray);
@@ -316,15 +429,13 @@ function CreateCategory(props) {
     const newCard = (title, color, description, id) => {
         let ph = [...cards];
         ph.push(
-            <Row className="rowmargin">
-                <ACard
-                    categoryId={props.id}
-                    c={color}
-                    title={title}
-                    id={id}
-                    description={description}
-                />
-            </Row>
+            <ACard
+                categoryId={props.id}
+                c={color}
+                title={title}
+                id={id}
+                description={description}
+            />
         );
         setCards(ph);
     };
@@ -333,6 +444,14 @@ function CreateCategory(props) {
 
     return showCategory ? (
         <div>
+            <EditCategoryModal
+                show={showEditCategory}
+                onHide={() => setEditCategory(false)}
+                title={categoryTitle}
+                id={props.id}
+                boardId={props.cookies.get("board")}
+                changeTitle={setCategoryTitle}
+            />
             <NewCardModal
                 show={showNewCardModal}
                 onHide={() => setShowNewCardModal(false)}
@@ -342,7 +461,7 @@ function CreateCategory(props) {
             />
             <Card className="container">
                 <Card.Header className="categoryHeader">
-                    <div>{props.title}</div>
+                    <div>{categoryTitle}</div>
                 </Card.Header>
                 <Card.Header className="categoryHeader2">
                     <Button
@@ -361,6 +480,9 @@ function CreateCategory(props) {
                     <Button
                         variant="secondary"
                         className="editButton float-right"
+                        onClick={() => {
+                            setEditCategory(true);
+                        }}
                     />
                 </Card.Header>
                 <Card.Body className="text-center categoryBody">
@@ -381,8 +503,8 @@ function ACard(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    return (
-        <div>
+    return !removed ? (
+        <Row className="rowmargin">
             <CardModal
                 show={show}
                 id={props.id}
@@ -394,13 +516,11 @@ function ACard(props) {
                 newColor={setColor}
                 newDescription={setDescription}
             />
-            {!removed ? (
-                <Button className={color + "Card"} onClick={handleShow}>
-                    {props.title}
-                </Button>
-            ) : null}
-        </div>
-    );
+            <Button className={color + "Card fitCategory"} onClick={handleShow}>
+                {props.title}
+            </Button>
+        </Row>
+    ) : null;
 }
 
 const toColor = (char) => {

@@ -57,7 +57,7 @@ function AddBoardModal(props) {
                 <Modal.Footer>
                     <p className="error">{error}</p>
                     <Button variant="primary" type="submit" className="submit">
-                        Login
+                        Submit
                     </Button>
                 </Modal.Footer>
             </form>
@@ -84,6 +84,7 @@ function User(props) {
                     className="green"
                     onClick={() => {
                         cookies.set("board", n[i].id, { path: "/" });
+                        cookies.set("star", true, { path: "/" });
                         setRedirect(true);
                     }}
                 >
@@ -101,6 +102,7 @@ function User(props) {
                     className="green"
                     onClick={() => {
                         cookies.set("board", n[i].id, { path: "/" });
+                        cookies.set("star", false, { path: "/" });
                         setRedirect(true);
                     }}
                 >

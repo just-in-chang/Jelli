@@ -16,7 +16,7 @@ function HeaderBar(props) {
                     height="26"
                     className="d-inline-block align-top"
                     alt="Jelli logo"
-                />{" "}
+                />
                 Jelli
             </NavBar.Brand>
             <Button
@@ -24,6 +24,7 @@ function HeaderBar(props) {
                 onClick={() => {
                     props.cookies.remove("user");
                     props.cookies.remove("board");
+                    props.cookies.remove("star");
                 }}
                 href="/"
             >
