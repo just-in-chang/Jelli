@@ -163,12 +163,14 @@ function User(props) {
                 />
 
                 <div className="bkgd">
-                    <h1>
-                        Boards
-                        <Button className="add" onClick={handleShowModal}>
-                            +
-                        </Button>
-                    </h1>
+                    <h1>Boards</h1>
+                    <div className="addBoard">
+                        <Button
+                            variant="secondary"
+                            className="addButton"
+                            onClick={handleShowModal}
+                        />
+                    </div>
                     <h2>Starred</h2>
                     <Container className="backgroundU">{star}</Container>
                     <h2>Other Boards</h2>

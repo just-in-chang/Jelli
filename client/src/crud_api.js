@@ -34,7 +34,6 @@ const handleRegister = (username, password, error, success) => {
         })
         .then((r) => {
             if (r > 0) {
-                console.log(r);
                 return error("This username has already been taken");
             } else {
                 fetch(USERS_URL, optionsPOST);
@@ -188,7 +187,7 @@ const getBoardName = (id, setB) => {
         });
 };
 
-const changeCard = (id, title, color, description, category) => {
+const changeCard = (id, title, color, description, category, repos) => {
     const optionsPUT = {
         method: "PUT",
         headers: {
@@ -202,20 +201,30 @@ const changeCard = (id, title, color, description, category) => {
         }),
     };
     let url = CARDS_URL + id + "/";
-    fetch(url, optionsPUT).then((r) => {
-        return r.json();
-    });
+    fetch(url, optionsPUT)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => repos());
 };
 
-const deleteCard = (id) => {
+const deleteCard = (id, repos) => {
     const optionsDELETE = {
         method: "DELETE",
     };
     let url = CARDS_URL + id + "/";
-    return fetch(url, optionsDELETE);
+    return fetch(url, optionsDELETE).then((r) => repos());
 };
 
-const newCard = (title, color, description, category, position, method) => {
+const newCard = (
+    title,
+    color,
+    description,
+    category,
+    position,
+    method,
+    repos
+) => {
     if (description == undefined || description.length <= 0) description = "♥";
     const optionsPOST = {
         method: "POST",
@@ -236,19 +245,20 @@ const newCard = (title, color, description, category, position, method) => {
             return r.json();
         })
         .then((r) => {
+            repos();
             return method(title, color, description, r.id);
         });
 };
 
-const deleteCategory = (id) => {
+const deleteCategory = (id, repos) => {
     const optionsDELETE = {
         method: "DELETE",
     };
     let url = CATEGORIES_URL + id + "/";
-    return fetch(url, optionsDELETE);
+    return fetch(url, optionsDELETE).then((r) => repos());
 };
 
-const newCategory = (title, board, position, method) => {
+const newCategory = (title, board, position, method, repos) => {
     const optionsPOST = {
         method: "POST",
         headers: {
@@ -261,13 +271,13 @@ const newCategory = (title, board, position, method) => {
             cards: [],
         }),
     };
-    console.log(optionsPOST.body);
     let url = CATEGORIES_URL;
     fetch(url, optionsPOST)
         .then((r) => {
             return r.json();
         })
         .then((r) => {
+            repos();
             return method(title, r.id);
         });
 };
@@ -280,7 +290,7 @@ const deleteBoard = (id) => {
     return fetch(url, optionsDELETE);
 };
 
-const editCategory = (id, title, boardId) => {
+const editCategory = (id, title, boardId, repos) => {
     const optionsPUT = {
         method: "PUT",
         headers: {
@@ -294,9 +304,11 @@ const editCategory = (id, title, boardId) => {
     };
 
     let url = CATEGORIES_URL + id + "/";
-    fetch(url, optionsPUT).then((r) => {
-        return r.json();
-    });
+    fetch(url, optionsPUT)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => repos());
 };
 
 const editBoard = (id, title, star, userId) => {
@@ -319,90 +331,49 @@ const editBoard = (id, title, star, userId) => {
     });
 };
 
-const getUser = () => {};
-
-/**
- * Changes user's password
- * @param {*} username User's username
- * @param {*} password User's old password
- * @param {*} newPassword User's new password
- */
-const changePassword = (username, password, newPassword) => {
-    let http = new XMLHttpRequest();
-    let doc = getUser(username);
-    let boards = [];
-    for (let i = 0; i < doc.boards.length; i++) {
-        boards.push(doc.boards[i].id);
-        delete doc.boards[i].id;
-    }
-    let url = USERS_URL + doc.id + "/";
-    if (doc.password == password) {
-        doc.password = newPassword;
-        doc.boards = [];
-        http.open("PUT", url, false);
-        http.setRequestHeader("Content-Type", "application/json");
-        http.send(JSON.stringify(doc));
-        return http.responseText;
-    }
-    return "Password Incorrect.";
+const updateCardPosition = (id, position) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    let url = CARDS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            r.position = position;
+            optionsPUT.body = JSON.stringify(r);
+            fetch(url, optionsPUT);
+        });
 };
 
-/**
- * Returns JSON with data of board
- * @param {*} id Id of the board
- */
-const getBoard = (id) => {
-    let http = new XMLHttpRequest();
-    let url = BOARDS_URL + id + "/";
-    http.open("GET", url, false);
-    http.send(null);
-    return http.responseText;
-};
-
-/**
- * Returns JSON with data of category
- * @param {*} id Id of the category
- */
-const getCategory = (id) => {
-    let http = new XMLHttpRequest();
+const updateCategoryPosition = (id, position) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
     let url = CATEGORIES_URL + id + "/";
-    http.open("GET", url, false);
-    http.send(null);
-    return http.responseText;
-};
-
-/**
- * Returns JSON with data of card
- * @param {*} id Id of the card
- */
-const getCard = (id) => {
-    let http = new XMLHttpRequest();
-    let url = CARDS_URL + id + "/";
-    http.open("GET", url, false);
-    http.send(null);
-    return http.responseText;
-};
-
-/**
- * Changes info of card; use `null` if data not changed
- * @param {*} id Id of card to change
- * @param {*} title New title of card
- * @param {*} description New description of card
- * @param {*} color New color of card
- * @param {*} position New position of card
- */
-const editCard = (id, title, description, color, position) => {
-    let http = new XMLHttpRequest();
-    let card = getCard(id);
-    let url = CARDS_URL + id + "/";
-    if (title != null) card.title = title;
-    if (description != null) card.description = description;
-    if (color != null) card.color = color;
-    if (position != null) card.position = position;
-    http.open("PUT", url, false);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(card));
-    return http.responseText;
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            r.position = position;
+            r.cards = [];
+            optionsPUT.body = JSON.stringify(r);
+            fetch(url, optionsPUT);
+        });
 };
 
 module.exports = {
@@ -420,11 +391,7 @@ module.exports = {
     newCategory,
     deleteBoard,
     editCategory,
-
-    changePassword,
-    getBoard,
     editBoard,
-    getCategory,
-    getCard,
-    editCard,
+    updateCardPosition,
+    updateCategoryPosition,
 };

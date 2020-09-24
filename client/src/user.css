@@ -8,6 +8,11 @@
     min-height: 92.2vh;
 }
 
+.addBoard {
+    display: flex;
+    justify-content: center;
+}
+
 .backgroundU {
     min-width: 98vw;
     max-width: 98vw;

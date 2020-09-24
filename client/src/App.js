@@ -20,6 +20,8 @@ import {
     newCategory,
     editCategory,
     editBoard,
+    updateCardPosition,
+    updateCategoryPosition,
 } from "./crud_api";
 import { HeaderBar } from "./header";
 
@@ -60,6 +62,10 @@ function App(props) {
         getCategories(cookies.get("board"), addCategory);
         getBoardName(cookies.get("board"), setB);
     }, [cookies]);
+
+    useEffect(() => {
+        calculatePositions();
+    }, [categories]);
 
     return (
         <div className="background">
@@ -147,14 +153,21 @@ function CardModal(props) {
 
         props.newColor(toColor(color));
         props.newDescription(description);
-        changeCard(props.id, props.title, color, description, props.categoryId);
+        changeCard(
+            props.id,
+            props.title,
+            color,
+            description,
+            props.categoryId,
+            calculatePositions
+        );
         return props.onHide();
     };
 
     const deleteThisCard = () => {
         props.removed(true);
         props.onHide();
-        deleteCard(props.id);
+        deleteCard(props.id, calculatePositions);
     };
 
     return (
@@ -223,7 +236,8 @@ function NewCardModal(props) {
                 description,
                 props.categoryId,
                 props.position,
-                props.newCard
+                props.newCard,
+                calculatePositions
             );
             return props.onHide();
         } else setError("Please insert title!");
@@ -282,7 +296,8 @@ function NewCategoryModal(props) {
                 title,
                 props.boardId,
                 props.position,
-                props.newCategory
+                props.newCategory,
+                calculatePositions
             );
             return props.onHide();
         } else setError("Please insert title!");
@@ -318,7 +333,7 @@ function EditCategoryModal(props) {
         e.preventDefault();
 
         if (title.length > 0) {
-            editCategory(props.id, title, props.boardId);
+            editCategory(props.id, title, props.boardId, calculatePositions);
             props.changeTitle(title);
             return props.onHide();
         } else setError("Please insert title!");
@@ -350,7 +365,6 @@ function EditCategoryModal(props) {
 }
 
 function EditBoardModal(props) {
-    console.log(props);
     const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
@@ -442,6 +456,10 @@ function CreateCategory(props) {
 
     useEffect(() => getCards(props.id, addCard), [props.cookies]);
 
+    useEffect(() => {
+        calculatePositions();
+    }, [cards]);
+
     return showCategory ? (
         <div>
             <EditCategoryModal
@@ -459,7 +477,7 @@ function CreateCategory(props) {
                 categoryId={props.id}
                 position={cards.length}
             />
-            <Card className="container">
+            <Card className="container" id={props.id}>
                 <Card.Header className="categoryHeader">
                     <div>{categoryTitle}</div>
                 </Card.Header>
@@ -474,7 +492,7 @@ function CreateCategory(props) {
                         className="deleteButton float-right"
                         onClick={() => {
                             setShowCategory(false);
-                            deleteCategory(props.id);
+                            deleteCategory(props.id, calculatePositions);
                         }}
                     />
                     <Button
@@ -516,12 +534,30 @@ function ACard(props) {
                 newColor={setColor}
                 newDescription={setDescription}
             />
-            <Button className={color + "Card fitCategory"} onClick={handleShow}>
+            <Button
+                className={color + "Card fitCategory"}
+                onClick={handleShow}
+                id={props.id}
+            >
                 {props.title}
             </Button>
         </Row>
     ) : null;
 }
+
+const calculatePositions = () => {
+    let categories = document.querySelectorAll(".container");
+    for (let i = 0; i < categories.length; i++) {
+        let category = categories[i];
+        let categoryId = category.getAttribute("id");
+        let buttons = category.querySelectorAll(".fitCategory");
+        for (let j = 0; j < buttons.length; j++) {
+            let buttonId = buttons[j].getAttribute("id");
+            updateCardPosition(buttonId, j);
+        }
+        updateCategoryPosition(categoryId, i);
+    }
+};
 
 const toColor = (char) => {
     switch (char) {
