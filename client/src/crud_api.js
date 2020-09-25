@@ -77,8 +77,16 @@ const addBoards = (id, star, board) => {
             let boards = [];
             if (r != undefined)
                 for (let i = 0; i < r.length; i++)
-                    if (r[i].star) stars.push({ name: r[i].name, id: r[i].id });
-                    else boards.push({ name: r[i].name, id: r[i].id });
+                    if (r[i].star)
+                        stars.splice(r[i].position, 0, {
+                            name: r[i].name,
+                            id: r[i].id,
+                        });
+                    else
+                        boards.splice(r[i].position, 0, {
+                            name: r[i].name,
+                            id: r[i].id,
+                        });
             star(stars);
             board(boards);
         });
@@ -114,15 +122,13 @@ const newBoard = (id, board, star, error, starM, boardsM, cookies) => {
 
             fetch(BOARDS_URL, optionsPOST)
                 .then((r) => {
-                    if (star) {
-                        starM(board);
-                        return r.json();
-                    } else {
-                        boardsM(board);
-                        return r.json();
-                    }
+                    return r.json();
                 })
-                .then((r) => cookies.set("board", r.id, { path: "/" }));
+                .then((r) => {
+                    cookies.set("board", r.id, { path: "/" });
+                    if (star) starM(board, r.id);
+                    else boardsM(board, r.id);
+                });
         });
 };
 
@@ -139,11 +145,13 @@ const getCategories = (boardId, addCategory) => {
             let categoryList = r.categories;
             let names = [];
             let ids = [];
+            let positions = [];
             for (let i = 0; i < categoryList.length; i++) {
                 names.push(categoryList[i].name);
                 ids.push(categoryList[i].id);
+                positions.push(categoryList[i].position);
             }
-            addCategory(names, ids);
+            addCategory(names, ids, positions);
         });
 };
 
@@ -162,14 +170,16 @@ const getCards = (categoryId, addCard) => {
             let ids = [];
             let colors = [];
             let descriptions = [];
+            let positions = [];
             if (cardList != undefined)
                 for (let i = 0; i < cardList.length; i++) {
                     names.push(cardList[i].title);
                     ids.push(cardList[i].id);
                     colors.push(cardList[i].color);
                     descriptions.push(cardList[i].description);
+                    positions.push(cardList[i].position);
                 }
-            addCard(names, ids, colors, descriptions);
+            addCard(names, ids, colors, descriptions, positions);
         });
 };
 
@@ -376,6 +386,29 @@ const updateCategoryPosition = (id, position) => {
         });
 };
 
+const updateBoardPosition = (id, position) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    let url = BOARDS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            r.position = position;
+            r.categories = [];
+            optionsPUT.body = JSON.stringify(r);
+            fetch(url, optionsPUT);
+        });
+};
+
 module.exports = {
     handleRegister,
     handleLogin,
@@ -394,4 +427,5 @@ module.exports = {
     editBoard,
     updateCardPosition,
     updateCategoryPosition,
+    updateBoardPosition,
 };

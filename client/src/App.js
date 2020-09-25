@@ -36,10 +36,12 @@ function App(props) {
     const [editBoardShow, setEditBoardShow] = useState(false);
     const [starred, setStarred] = useState(cookies.get("star"));
 
-    const addCategory = (n, i) => {
+    const addCategory = (n, i, p) => {
         let categoryArray = [];
         for (let j = 0; j < n.length; j++) {
-            categoryArray.push(
+            categoryArray.splice(
+                p[j],
+                0,
                 <CreateCategory
                     title={n[j]}
                     id={i[j]}
@@ -424,10 +426,12 @@ function CreateCategory(props) {
     let [showEditCategory, setEditCategory] = useState(false);
     let [categoryTitle, setCategoryTitle] = useState(props.title);
 
-    const addCard = (names, ids, colors, descriptions) => {
+    const addCard = (names, ids, colors, descriptions, positions) => {
         let cardArray = [];
         for (let i = 0; i < names.length; i++) {
-            cardArray.push(
+            cardArray.splice(
+                positions[i],
+                0,
                 <ACard
                     categoryId={props.id}
                     c={colors[i]}

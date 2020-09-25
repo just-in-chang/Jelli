@@ -6,19 +6,19 @@ import Modal from "react-bootstrap/Modal";
 import Container from "react-bootstrap/Container";
 import { Redirect } from "react-router-dom";
 import { HeaderBar } from "./header";
-import { addBoards, newBoard } from "./crud_api";
+import { addBoards, newBoard, updateBoardPosition } from "./crud_api";
 import "./user.css";
 
 function AddBoardModal(props) {
     const [error, setError] = useState("");
 
-    const successStar = (u) => {
-        props.star(u);
+    const successStar = (u, id) => {
+        props.star(u, id);
         props.onHide();
     };
 
-    const successBoard = (u) => {
-        props.board(u);
+    const successBoard = (u, id) => {
+        props.board(u, id);
         props.onHide();
     };
 
@@ -82,6 +82,7 @@ function User(props) {
             stars.push(
                 <Button
                     className="green"
+                    id={n[i].id}
                     onClick={() => {
                         cookies.set("board", n[i].id, { path: "/" });
                         cookies.set("star", true, { path: "/" });
@@ -100,6 +101,7 @@ function User(props) {
             b.push(
                 <Button
                     className="green"
+                    id={n[i].id}
                     onClick={() => {
                         cookies.set("board", n[i].id, { path: "/" });
                         cookies.set("star", false, { path: "/" });
@@ -112,11 +114,12 @@ function User(props) {
         setBoards(b);
     };
 
-    let newStar = (n) => {
+    let newStar = (n, id) => {
         setStar(
             star.concat(
                 <Button
                     className="green"
+                    id={id}
                     onClick={() => {
                         setRedirect(true);
                     }}
@@ -127,11 +130,12 @@ function User(props) {
         );
     };
 
-    let newBoard = (n) => {
+    let newBoard = (n, id) => {
         setBoards(
             boards.concat(
                 <Button
                     className="green"
+                    id={id}
                     onClick={() => {
                         setRedirect(true);
                     }}
@@ -145,6 +149,8 @@ function User(props) {
     useEffect(() => addBoards(cookies.get("user"), addStar, addBoard), [
         cookies,
     ]);
+
+    useEffect(() => calculatePositions(), [star, boards]);
 
     return (
         <div className="background">
@@ -180,5 +186,17 @@ function User(props) {
         </div>
     );
 }
+
+const calculatePositions = () => {
+    let boards = document.querySelectorAll(".backgroundU");
+    for (let i = 0; i < boards.length; i++) {
+        let boardGroup = boards[i];
+        let board = boardGroup.querySelectorAll(".green");
+        for (let j = 0; j < board.length; j++) {
+            let boardId = board[j].getAttribute("id");
+            updateBoardPosition(boardId, j);
+        }
+    }
+};
 
 export { User };
