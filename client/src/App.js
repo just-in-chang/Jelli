@@ -36,6 +36,9 @@ function App(props) {
     const [editBoardShow, setEditBoardShow] = useState(false);
     const [starred, setStarred] = useState(cookies.get("star"));
 
+    const [dragCategoryId, setDragCategoryId] = useState(-1);
+    const [dragCardId, setDragCardId] = useState(-1);
+
     const addCategory = (n, i, p) => {
         let categoryArray = [];
         for (let j = 0; j < n.length; j++) {
@@ -46,6 +49,10 @@ function App(props) {
                     title={n[j]}
                     id={i[j]}
                     cookies={props.cookies}
+                    dragCategoryId={dragCategoryId}
+                    setDragCategoryId={setDragCategoryId}
+                    dragCardId={dragCardId}
+                    setDragCardId={setDragCardId}
                 />
             );
         }
@@ -438,6 +445,8 @@ function CreateCategory(props) {
                     title={names[i]}
                     id={ids[i]}
                     description={descriptions[i]}
+                    dragCardId={props.dragCardId}
+                    setDragCardId={props.setDragCardId}
                 />
             );
         }
@@ -453,9 +462,24 @@ function CreateCategory(props) {
                 title={title}
                 id={id}
                 description={description}
+                dragCardId={props.dragCardId}
+                setDragCardId={props.setDragCardId}
             />
         );
         setCards(ph);
+    };
+
+    const dragStart = (e) => {
+        const target = e.target;
+        props.setDragCategoryId(props.id);
+        e.dataTransfer.setData("categoryId", target.id);
+        setTimeout(() => {
+            target.style.display = "none";
+        }, 0);
+    };
+
+    const dragEnd = (e) => {
+        props.setDragCategoryId(-1);
     };
 
     useEffect(() => getCards(props.id, addCard), [props.cookies]);
@@ -465,7 +489,7 @@ function CreateCategory(props) {
     }, [cards]);
 
     return showCategory ? (
-        <div>
+        <div draggable={true} onDragStart={dragStart} onDragEnd={dragEnd}>
             <EditCategoryModal
                 show={showEditCategory}
                 onHide={() => setEditCategory(false)}
@@ -525,8 +549,27 @@ function ACard(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const dragStart = (e) => {
+        const target = e.target;
+        props.setDragCardId(props.id);
+        console.log(props.dragCardId);
+        e.dataTransfer.setData("cardId", target.id);
+        setTimeout(() => {
+            target.style.display = "none";
+        }, 0);
+    };
+
+    const dragEnd = (e) => {
+        props.setDragCardId(-1);
+    };
+
     return !removed ? (
-        <Row className="rowmargin">
+        <Row
+            className="rowmargin"
+            draggable={true}
+            onDragStart={dragStart}
+            onDragEnd={dragEnd}
+        >
             <CardModal
                 show={show}
                 id={props.id}
