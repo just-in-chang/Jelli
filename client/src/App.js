@@ -36,9 +36,6 @@ function App(props) {
     const [editBoardShow, setEditBoardShow] = useState(false);
     const [starred, setStarred] = useState(cookies.get("star"));
 
-    const [dragCategoryId, setDragCategoryId] = useState(-1);
-    const [dragCardId, setDragCardId] = useState(-1);
-
     const addCategory = (n, i, p) => {
         let categoryArray = [];
         for (let j = 0; j < n.length; j++) {
@@ -49,10 +46,6 @@ function App(props) {
                     title={n[j]}
                     id={i[j]}
                     cookies={props.cookies}
-                    dragCategoryId={dragCategoryId}
-                    setDragCategoryId={setDragCategoryId}
-                    dragCardId={dragCardId}
-                    setDragCardId={setDragCardId}
                 />
             );
         }
@@ -445,8 +438,6 @@ function CreateCategory(props) {
                     title={names[i]}
                     id={ids[i]}
                     description={descriptions[i]}
-                    dragCardId={props.dragCardId}
-                    setDragCardId={props.setDragCardId}
                 />
             );
         }
@@ -462,8 +453,6 @@ function CreateCategory(props) {
                 title={title}
                 id={id}
                 description={description}
-                dragCardId={props.dragCardId}
-                setDragCardId={props.setDragCardId}
             />
         );
         setCards(ph);
@@ -471,15 +460,24 @@ function CreateCategory(props) {
 
     const dragStart = (e) => {
         const target = e.target;
-        props.setDragCategoryId(props.id);
-        e.dataTransfer.setData("categoryId", target.id);
+        e.dataTransfer.setData("categoryId", props.id);
         setTimeout(() => {
-            target.style.display = "none";
+            target.style.opacity = 0.25;
         }, 0);
     };
 
     const dragEnd = (e) => {
-        props.setDragCategoryId(-1);
+        const target = e.target;
+        setTimeout(() => {
+            target.style.opacity = 1;
+        });
+    };
+
+    const drop = (e) => {
+        const cardId = e.dataTransfer.getData("cardId");
+        if (!cardId) return;
+        console.log(e.target);
+        e.preventDefault();
     };
 
     useEffect(() => getCards(props.id, addCard), [props.cookies]);
@@ -489,7 +487,7 @@ function CreateCategory(props) {
     }, [cards]);
 
     return showCategory ? (
-        <div draggable={true} onDragStart={dragStart} onDragEnd={dragEnd}>
+        <div>
             <EditCategoryModal
                 show={showEditCategory}
                 onHide={() => setEditCategory(false)}
@@ -505,7 +503,15 @@ function CreateCategory(props) {
                 categoryId={props.id}
                 position={cards.length}
             />
-            <Card className="container" id={props.id}>
+            <Card
+                className="container"
+                id={props.id}
+                draggable={true}
+                onDragStart={dragStart}
+                onDragEnd={dragEnd}
+                onDrop={drop}
+                onDragOver={(e) => e.preventDefault()}
+            >
                 <Card.Header className="categoryHeader">
                     <div>{categoryTitle}</div>
                 </Card.Header>
@@ -551,16 +557,17 @@ function ACard(props) {
 
     const dragStart = (e) => {
         const target = e.target;
-        props.setDragCardId(props.id);
-        console.log(props.dragCardId);
-        e.dataTransfer.setData("cardId", target.id);
+        e.dataTransfer.setData("cardId", props.id);
         setTimeout(() => {
-            target.style.display = "none";
+            target.style.opacity = 0.25;
         }, 0);
     };
 
     const dragEnd = (e) => {
-        props.setDragCardId(-1);
+        const target = e.target;
+        setTimeout(() => {
+            target.style.opacity = 1;
+        });
     };
 
     return !removed ? (
