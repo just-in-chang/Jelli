@@ -475,8 +475,16 @@ function CreateCategory(props) {
 
     const drop = (e) => {
         const cardId = e.dataTransfer.getData("cardId");
+        const cardCoordsY = e.dataTransfer.getData("cardCoordsY");
+        const cardCoordsX = e.dataTransfer.getData("cardCoordsX");
+        const mouseX = e.dataTransfer.getData("mouseX");
+        const mouseY = e.dataTransfer.getData("mouseY");
         if (!cardId) return;
         console.log(e.target);
+        console.log(cardId);
+        console.log(cardCoordsY, cardCoordsX);
+        console.log(e.clientX, e.clientY);
+        console.log(mouseX, mouseY);
         e.preventDefault();
     };
 
@@ -557,7 +565,12 @@ function ACard(props) {
 
     const dragStart = (e) => {
         const target = e.target;
+        const coords = target.getBoundingClientRect();
         e.dataTransfer.setData("cardId", props.id);
+        e.dataTransfer.setData("cardCoordsY", coords.top);
+        e.dataTransfer.setData("cardCoordsX", coords.left);
+        e.dataTransfer.setData("mouseX", e.clientX);
+        e.dataTransfer.setData("mouseY", e.clientY);
         setTimeout(() => {
             target.style.opacity = 0.25;
         }, 0);
