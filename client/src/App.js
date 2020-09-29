@@ -426,6 +426,20 @@ function CreateCategory(props) {
     let [showEditCategory, setEditCategory] = useState(false);
     let [categoryTitle, setCategoryTitle] = useState(props.title);
 
+    const removeId = (id) => {
+        console.log(cards);
+        let cardsPh = [...cards];
+        for (let i = 0; i < cardsPh.length; i++) {
+            if (cardsPh[i].props.id == id) {
+                cardsPh.splice(i, 1);
+                i--;
+                break;
+            }
+        }
+        setCards(cardsPh);
+        console.log(cardsPh);
+    };
+
     const addCard = (names, ids, colors, descriptions, positions) => {
         let cardArray = [];
         for (let i = 0; i < names.length; i++) {
@@ -438,6 +452,7 @@ function CreateCategory(props) {
                     title={names[i]}
                     id={ids[i]}
                     description={descriptions[i]}
+                    removeId={removeId}
                 />
             );
         }
@@ -453,6 +468,7 @@ function CreateCategory(props) {
                 title={title}
                 id={id}
                 description={description}
+                removeId={removeId}
             />
         );
         setCards(ph);
@@ -474,17 +490,74 @@ function CreateCategory(props) {
     };
 
     const drop = (e) => {
+        let droppedOnto;
         const cardId = e.dataTransfer.getData("cardId");
-        const cardCoordsY = e.dataTransfer.getData("cardCoordsY");
-        const cardCoordsX = e.dataTransfer.getData("cardCoordsX");
-        const mouseX = e.dataTransfer.getData("mouseX");
-        const mouseY = e.dataTransfer.getData("mouseY");
-        if (!cardId) return;
-        console.log(e.target);
-        console.log(cardId);
-        console.log(cardCoordsY, cardCoordsX);
-        console.log(e.clientX, e.clientY);
-        console.log(mouseX, mouseY);
+
+        if (e.target.getAttribute("class").includes("fitCategory"))
+            droppedOnto = e.target.parentElement.parentElement.parentElement;
+        else if (e.target.getAttribute("class").includes("categoryBody"))
+            droppedOnto = e.target;
+        else if (e.target.getAttribute("class").includes("container-fluid"))
+            droppedOnto = e.target.parentElement;
+
+        if (!cardId || !droppedOnto) return;
+
+        const childNodes = droppedOnto.childNodes[0].childNodes;
+        const originalY = e.dataTransfer.getData("cardCoordsY");
+        const offsetY = e.dataTransfer.getData("mouseY") - originalY;
+        const droppedY = e.clientY - offsetY;
+
+        let cardsPh = [...cards];
+        cardsPh.push(
+            <ACard
+                categoryId={props.id}
+                c={e.dataTransfer.getData("color")}
+                title={e.dataTransfer.getData("title")}
+                id={cardId}
+                description={e.dataTransfer.getData("description")}
+                removeId={removeId}
+            />
+        );
+        setCards(cardsPh);
+
+        // for (let i = 0; i < childNodes.length; i++) {
+        //     let cardPh = childNodes[i].childNodes[0];
+        //     let cardPhId = cardPh.getAttribute("id");
+        //     let cardPhY = cardPh.getBoundingClientRect().top;
+        //     if (originalY != cardPhY) {
+        //         if (droppedY <= cardPhY) {
+        //             let cardsPh = [...cards];
+        //             for (let j = 0; j < cardsPh.length; j++) {
+        //                 if (cardsPh[j].props.id == cardPhId) {
+        //                     cardsPh.splice(j, 1);
+        //                     j--;
+        //                     console.log("remove");
+        //                     break;
+        //                 }
+        //             }
+        //             for (let j = 0; j < cardsPh.length; j++) {
+        //                 cardsPh.splice(
+        //                     j,
+        //                     0,
+        //                     <ACard
+        //                         categoryId={props.id}
+        //                         c={e.dataTransfer.getData("color")}
+        //                         title={e.dataTransfer.getData("title")}
+        //                         id={cardId}
+        //                         description={e.dataTransfer.getData(
+        //                             "description"
+        //                         )}
+        //                         removeId={removeId}
+        //                     />
+        //                 );
+        //                 console.log(cardsPh);
+        //                 console.log("add");
+        //                 setCards(cardsPh);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
         e.preventDefault();
     };
 
@@ -568,11 +641,13 @@ function ACard(props) {
         const coords = target.getBoundingClientRect();
         e.dataTransfer.setData("cardId", props.id);
         e.dataTransfer.setData("cardCoordsY", coords.top);
-        e.dataTransfer.setData("cardCoordsX", coords.left);
-        e.dataTransfer.setData("mouseX", e.clientX);
         e.dataTransfer.setData("mouseY", e.clientY);
+        e.dataTransfer.setData("color", color.charAt(0).toLowerCase());
+        e.dataTransfer.setData("title", props.title);
+        e.dataTransfer.setData("description", description);
         setTimeout(() => {
             target.style.opacity = 0.25;
+            props.removeId(props.id);
         }, 0);
     };
 
@@ -580,7 +655,7 @@ function ACard(props) {
         const target = e.target;
         setTimeout(() => {
             target.style.opacity = 1;
-        });
+        }, 0);
     };
 
     return !removed ? (
