@@ -22,6 +22,7 @@ import {
     editBoard,
     updateCardPosition,
     updateCategoryPosition,
+    changeCardCategory,
 } from "./crud_api";
 import { HeaderBar } from "./header";
 
@@ -420,57 +421,34 @@ function EditBoardModal(props) {
 }
 
 function CreateCategory(props) {
-    let [showCategory, setShowCategory] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [showCategory, setShowCategory] = useState(true);
+    const [showNewCardModal, setShowNewCardModal] = useState(false);
+    const [showEditCategory, setEditCategory] = useState(false);
+    const [categoryTitle, setCategoryTitle] = useState(props.title);
+
     let [cards, setCards] = useState([]);
-    let [showNewCardModal, setShowNewCardModal] = useState(false);
-    let [showEditCategory, setEditCategory] = useState(false);
-    let [categoryTitle, setCategoryTitle] = useState(props.title);
 
     const removeId = (id) => {
-        console.log(cards);
         let cardsPh = [...cards];
         for (let i = 0; i < cardsPh.length; i++) {
-            if (cardsPh[i].props.id == id) {
+            if (cardsPh[i].id == id) {
                 cardsPh.splice(i, 1);
-                i--;
+                setCards(cardsPh);
                 break;
             }
         }
-        setCards(cardsPh);
-        console.log(cardsPh);
-    };
-
-    const addCard = (names, ids, colors, descriptions, positions) => {
-        let cardArray = [];
-        for (let i = 0; i < names.length; i++) {
-            cardArray.splice(
-                positions[i],
-                0,
-                <ACard
-                    categoryId={props.id}
-                    c={colors[i]}
-                    title={names[i]}
-                    id={ids[i]}
-                    description={descriptions[i]}
-                    removeId={removeId}
-                />
-            );
-        }
-        setCards(cardArray);
     };
 
     const newCard = (title, color, description, id) => {
         let ph = [...cards];
-        ph.push(
-            <ACard
-                categoryId={props.id}
-                c={color}
-                title={title}
-                id={id}
-                description={description}
-                removeId={removeId}
-            />
-        );
+        ph.push({
+            id: parseInt(id),
+            title: title,
+            description: description,
+            color: color,
+            category: props.id,
+        });
         setCards(ph);
     };
 
@@ -502,70 +480,27 @@ function CreateCategory(props) {
 
         if (!cardId || !droppedOnto) return;
 
-        const childNodes = droppedOnto.childNodes[0].childNodes;
-        const originalY = e.dataTransfer.getData("cardCoordsY");
-        const offsetY = e.dataTransfer.getData("mouseY") - originalY;
-        const droppedY = e.clientY - offsetY;
-
         let cardsPh = [...cards];
-        cardsPh.push(
-            <ACard
-                categoryId={props.id}
-                c={e.dataTransfer.getData("color")}
-                title={e.dataTransfer.getData("title")}
-                id={cardId}
-                description={e.dataTransfer.getData("description")}
-                removeId={removeId}
-            />
-        );
+        cardsPh.push({
+            id: parseInt(cardId),
+            title: e.dataTransfer.getData("title"),
+            description: e.dataTransfer.getData("description"),
+            color: e.dataTransfer.getData("color"),
+            category: props.id,
+            position: 0,
+        });
+        console.log(cardId, props.id);
+        changeCardCategory(cardId, props.id);
         setCards(cardsPh);
-
-        // for (let i = 0; i < childNodes.length; i++) {
-        //     let cardPh = childNodes[i].childNodes[0];
-        //     let cardPhId = cardPh.getAttribute("id");
-        //     let cardPhY = cardPh.getBoundingClientRect().top;
-        //     if (originalY != cardPhY) {
-        //         if (droppedY <= cardPhY) {
-        //             let cardsPh = [...cards];
-        //             for (let j = 0; j < cardsPh.length; j++) {
-        //                 if (cardsPh[j].props.id == cardPhId) {
-        //                     cardsPh.splice(j, 1);
-        //                     j--;
-        //                     console.log("remove");
-        //                     break;
-        //                 }
-        //             }
-        //             for (let j = 0; j < cardsPh.length; j++) {
-        //                 cardsPh.splice(
-        //                     j,
-        //                     0,
-        //                     <ACard
-        //                         categoryId={props.id}
-        //                         c={e.dataTransfer.getData("color")}
-        //                         title={e.dataTransfer.getData("title")}
-        //                         id={cardId}
-        //                         description={e.dataTransfer.getData(
-        //                             "description"
-        //                         )}
-        //                         removeId={removeId}
-        //                     />
-        //                 );
-        //                 console.log(cardsPh);
-        //                 console.log("add");
-        //                 setCards(cardsPh);
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
+        calculatePositions();
         e.preventDefault();
     };
 
-    useEffect(() => getCards(props.id, addCard), [props.cookies]);
-
     useEffect(() => {
-        calculatePositions();
-    }, [cards]);
+        if (loading) {
+            getCards(props.id, setCards, setLoading);
+        }
+    });
 
     return showCategory ? (
         <div>
@@ -619,7 +554,19 @@ function CreateCategory(props) {
                     />
                 </Card.Header>
                 <Card.Body className="text-center categoryBody">
-                    <Container fluid>{cards}</Container>
+                    <Container fluid>
+                        {cards != null &&
+                            cards.map((card) => (
+                                <ACard
+                                    categoryId={props.id}
+                                    c={card.color}
+                                    title={card.title}
+                                    id={card.id}
+                                    description={card.description}
+                                    removeId={removeId}
+                                />
+                            ))}
+                    </Container>
                 </Card.Body>
             </Card>
         </div>
@@ -629,7 +576,6 @@ function CreateCategory(props) {
 function ACard(props) {
     const [show, setShow] = useState(false);
     const [removed, setRemoved] = useState(false);
-
     const [color, setColor] = useState(toColor(props.c).toString());
     const [description, setDescription] = useState(props.description);
 
@@ -638,33 +584,27 @@ function ACard(props) {
 
     const dragStart = (e) => {
         const target = e.target;
-        const coords = target.getBoundingClientRect();
         e.dataTransfer.setData("cardId", props.id);
-        e.dataTransfer.setData("cardCoordsY", coords.top);
-        e.dataTransfer.setData("mouseY", e.clientY);
         e.dataTransfer.setData("color", color.charAt(0).toLowerCase());
         e.dataTransfer.setData("title", props.title);
         e.dataTransfer.setData("description", description);
         setTimeout(() => {
             target.style.opacity = 0.25;
             props.removeId(props.id);
-        }, 0);
-    };
-
-    const dragEnd = (e) => {
-        const target = e.target;
-        setTimeout(() => {
-            target.style.opacity = 1;
+            // let cardsPh = [...props.cards];
+            // for (let i = 0; i < cardsPh.length; i++) {
+            //     if (cardsPh[0].props.id == props.id) {
+            //         cardsPh.splice(i, 1);
+            //         props.setCards(cardsPh);
+            //         console.log(cardsPh);
+            //         break;
+            //     }
+            // }
         }, 0);
     };
 
     return !removed ? (
-        <Row
-            className="rowmargin"
-            draggable={true}
-            onDragStart={dragStart}
-            onDragEnd={dragEnd}
-        >
+        <Row className="rowmargin" draggable={true} onDragStart={dragStart}>
             <CardModal
                 show={show}
                 id={props.id}
@@ -688,6 +628,7 @@ function ACard(props) {
 }
 
 const calculatePositions = () => {
+    console.log("calculate");
     let categories = document.querySelectorAll(".container");
     for (let i = 0; i < categories.length; i++) {
         let category = categories[i];

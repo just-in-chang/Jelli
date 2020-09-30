@@ -155,7 +155,7 @@ const getCategories = (boardId, addCategory) => {
         });
 };
 
-const getCards = (categoryId, addCard) => {
+const getCards = (categoryId, setCards2, setLoading) => {
     const optionsGET = {
         method: "GET",
     };
@@ -165,21 +165,8 @@ const getCards = (categoryId, addCard) => {
             return r.json();
         })
         .then((r) => {
-            let cardList = r.cards;
-            let names = [];
-            let ids = [];
-            let colors = [];
-            let descriptions = [];
-            let positions = [];
-            if (cardList != undefined)
-                for (let i = 0; i < cardList.length; i++) {
-                    names.push(cardList[i].title);
-                    ids.push(cardList[i].id);
-                    colors.push(cardList[i].color);
-                    descriptions.push(cardList[i].description);
-                    positions.push(cardList[i].position);
-                }
-            addCard(names, ids, colors, descriptions, positions);
+            setCards2(r.cards);
+            setLoading(false);
         });
 };
 
@@ -359,6 +346,7 @@ const updateCardPosition = (id, position) => {
         .then((r) => {
             r.position = position;
             optionsPUT.body = JSON.stringify(r);
+            console.log(optionsPUT.body);
             fetch(url, optionsPUT);
         });
 };
@@ -409,6 +397,29 @@ const updateBoardPosition = (id, position) => {
         });
 };
 
+const changeCardCategory = (id, newCategoryId) => {
+    const optionsGET = {
+        method: "GET",
+    };
+    const optionsPUT = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    let url = CARDS_URL + id + "/";
+    fetch(url, optionsGET)
+        .then((r) => {
+            return r.json();
+        })
+        .then((r) => {
+            r.category = newCategoryId;
+            optionsPUT.body = JSON.stringify(r);
+            console.log(optionsPUT.body);
+            return fetch(url, optionsPUT);
+        });
+};
+
 module.exports = {
     handleRegister,
     handleLogin,
@@ -428,4 +439,5 @@ module.exports = {
     updateCardPosition,
     updateCategoryPosition,
     updateBoardPosition,
+    changeCardCategory,
 };
