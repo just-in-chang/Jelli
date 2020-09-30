@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
 import "../styles/Board.css";
 import { HeaderBar } from "../components/HeaderBar";
-import { getBoardName, getCategories, calculatePositions } from "../crud_api";
+import { getBoardName, getCategories, calculatePositions2 } from "../crud_api";
 import { ConfirmDeleteModal } from "../components/modals/board/ConfirmDeleteModal";
 import { Category } from "../components/Category";
 import { NewCategoryModal } from "../components/modals/category/NewCategoryModal";
@@ -45,7 +45,7 @@ function Board(props) {
     }, [cookies]);
 
     useEffect(() => {
-        calculatePositions();
+        calculatePositions2();
     }, [categories]);
 
     return (
