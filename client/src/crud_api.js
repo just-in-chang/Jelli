@@ -420,6 +420,51 @@ const changeCardCategory = (id, newCategoryId) => {
         });
 };
 
+const calculatePositions = () => {
+    let categories = document.querySelectorAll(".container");
+    for (let i = 0; i < categories.length; i++) {
+        let category = categories[i];
+        let categoryId = category.getAttribute("id");
+        let buttons = category.querySelectorAll(".fitCategory");
+        for (let j = 0; j < buttons.length; j++) {
+            let buttonId = buttons[j].getAttribute("id");
+            updateCardPosition(buttonId, j);
+        }
+        updateCategoryPosition(categoryId, i);
+    }
+};
+
+const toColor = (char) => {
+    switch (char) {
+        case "r":
+            return "Red";
+        case "o":
+            return "Orange";
+        case "y":
+            return "Yellow";
+        case "g":
+            return "Green";
+        case "b":
+            return "Blue";
+        case "i":
+            return "Indigo";
+        case "v":
+            return "Violet";
+    }
+};
+
+const calculatePositions2 = () => {
+    let boards = document.querySelectorAll(".backgroundU");
+    for (let i = 0; i < boards.length; i++) {
+        let boardGroup = boards[i];
+        let board = boardGroup.querySelectorAll(".green");
+        for (let j = 0; j < board.length; j++) {
+            let boardId = board[j].getAttribute("id");
+            updateBoardPosition(boardId, j);
+        }
+    }
+};
+
 module.exports = {
     handleRegister,
     handleLogin,
@@ -440,4 +485,7 @@ module.exports = {
     updateCategoryPosition,
     updateBoardPosition,
     changeCardCategory,
+    calculatePositions,
+    toColor,
+    calculatePositions2,
 };

@@ -3,7 +3,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import NavBar from "react-bootstrap/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./header.css";
+import "../styles/HeaderBar.css";
 
 function HeaderBar(props) {
     return (
