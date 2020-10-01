@@ -13,6 +13,7 @@ import { EditBoardModal } from "../components/modals/board/EditBoardModal";
 function Board(props) {
     let cookies = props.cookies;
 
+    const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([]);
     const [b, setB] = useState("");
     const [newCategoryModalShow, setNewCategoryModalShow] = useState(false);
@@ -21,28 +22,18 @@ function Board(props) {
     const [editBoardShow, setEditBoardShow] = useState(false);
     const [starred, setStarred] = useState(cookies.get("star"));
 
-    const addCategory = (n, i, p) => {
-        let categoryArray = [];
-        for (let j = 0; j < n.length; j++) {
-            categoryArray.splice(
-                p[j],
-                0,
-                <Category title={n[j]} id={i[j]} cookies={props.cookies} />
-            );
-        }
-        setCategories(categoryArray);
-    };
-
-    const newCategoryMethod = (title, id) => {
+    const newCategoryMethod = (name, id) => {
         let ph = [...categories];
-        ph.push(<Category title={title} id={id} cookies={props.cookies} />);
+        ph.push({ name: name, id: id });
         setCategories(ph);
     };
 
     useEffect(() => {
-        getCategories(cookies.get("board"), addCategory);
-        getBoardName(cookies.get("board"), setB);
-    }, [cookies]);
+        if (loading) {
+            getCategories(cookies.get("board"), setCategories, setLoading);
+            getBoardName(cookies.get("board"), setB);
+        }
+    });
 
     useEffect(() => {
         calculatePositions2();
@@ -95,7 +86,14 @@ function Board(props) {
                         onClick={() => setConfirmDelete(true)}
                     />
                 </div>
-                {categories}
+                {categories != null &&
+                    categories.map((category) => (
+                        <Category
+                            id={category.id}
+                            title={category.name}
+                            cookies={cookies}
+                        />
+                    ))}
             </div>
         </div>
     );

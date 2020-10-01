@@ -132,7 +132,7 @@ const newBoard = (id, board, star, error, starM, boardsM, cookies) => {
         });
 };
 
-const getCategories = (boardId, addCategory) => {
+const getCategories = (boardId, setCategories, setLoading) => {
     const optionsGET = {
         method: "GET",
     };
@@ -143,19 +143,17 @@ const getCategories = (boardId, addCategory) => {
         })
         .then((r) => {
             let categoryList = r.categories;
-            let names = [];
-            let ids = [];
-            let positions = [];
-            for (let i = 0; i < categoryList.length; i++) {
-                names.push(categoryList[i].name);
-                ids.push(categoryList[i].id);
-                positions.push(categoryList[i].position);
-            }
-            addCategory(names, ids, positions);
+            categoryList.sort((a, b) => {
+                let x = a["position"];
+                let y = b["position"];
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
+            setCategories(categoryList);
+            setLoading(false);
         });
 };
 
-const getCards = (categoryId, setCards2, setLoading) => {
+const getCards = (categoryId, setCards, setLoading) => {
     const optionsGET = {
         method: "GET",
     };
@@ -165,7 +163,13 @@ const getCards = (categoryId, setCards2, setLoading) => {
             return r.json();
         })
         .then((r) => {
-            setCards2(r.cards);
+            let cards = r.cards;
+            cards.sort((a, b) => {
+                let x = a["position"];
+                let y = b["position"];
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
+            setCards(r.cards);
             setLoading(false);
         });
 };
@@ -346,7 +350,6 @@ const updateCardPosition = (id, position) => {
         .then((r) => {
             r.position = position;
             optionsPUT.body = JSON.stringify(r);
-            console.log(optionsPUT.body);
             fetch(url, optionsPUT);
         });
 };
@@ -415,7 +418,6 @@ const changeCardCategory = (id, newCategoryId) => {
         .then((r) => {
             r.category = newCategoryId;
             optionsPUT.body = JSON.stringify(r);
-            console.log(optionsPUT.body);
             return fetch(url, optionsPUT);
         });
 };
@@ -481,9 +483,6 @@ module.exports = {
     deleteBoard,
     editCategory,
     editBoard,
-    updateCardPosition,
-    updateCategoryPosition,
-    updateBoardPosition,
     changeCardCategory,
     calculatePositions,
     toColor,

@@ -7,7 +7,7 @@ import {
     calculatePositions,
     changeCardCategory,
     deleteCategory,
-    getCards
+    getCards,
 } from "../crud_api";
 import "../styles/Board.css";
 import { ACard } from "./ACard";
@@ -34,6 +34,39 @@ function Category(props) {
         }
     };
 
+    const changeColor = (id, color) => {
+        let cardsPh = [...cards];
+        for (let i = 0; i < cardsPh.length; i++) {
+            if (cardsPh[i].id == id) {
+                cardsPh[i].color = color;
+                setCards(cardsPh);
+                break;
+            }
+        }
+    };
+
+    const changeDescription = (id, description) => {
+        let cardsPh = [...cards];
+        for (let i = 0; i < cardsPh.length; i++) {
+            if (cardsPh[i].id == id) {
+                cardsPh[i].description = description;
+                setCards(cardsPh);
+                break;
+            }
+        }
+    };
+
+    const changeTitle = (id, title) => {
+        let cardsPh = [...cards];
+        for (let i = 0; i < cardsPh.length; i++) {
+            if (cardsPh[i].id == id) {
+                cardsPh[i].title = title;
+                setCards(cardsPh);
+                break;
+            }
+        }
+    };
+
     const newCard = (title, color, description, id) => {
         let ph = [...cards];
         ph.push({
@@ -44,21 +77,6 @@ function Category(props) {
             category: props.id,
         });
         setCards(ph);
-    };
-
-    const dragStart = (e) => {
-        const target = e.target;
-        e.dataTransfer.setData("categoryId", props.id);
-        setTimeout(() => {
-            target.style.opacity = 0.25;
-        }, 0);
-    };
-
-    const dragEnd = (e) => {
-        const target = e.target;
-        setTimeout(() => {
-            target.style.opacity = 1;
-        });
     };
 
     const drop = (e) => {
@@ -83,11 +101,9 @@ function Category(props) {
             category: props.id,
             position: 0,
         });
-        console.log(cardId, props.id);
         changeCardCategory(cardId, props.id);
         setCards(cardsPh);
         calculatePositions();
-        e.preventDefault();
     };
 
     useEffect(() => {
@@ -116,9 +132,6 @@ function Category(props) {
             <Card
                 className="container"
                 id={props.id}
-                draggable={true}
-                onDragStart={dragStart}
-                onDragEnd={dragEnd}
                 onDrop={drop}
                 onDragOver={(e) => e.preventDefault()}
             >
@@ -158,6 +171,9 @@ function Category(props) {
                                     id={card.id}
                                     description={card.description}
                                     removeId={removeId}
+                                    changeColor={changeColor}
+                                    changeDescription={changeDescription}
+                                    changeTitle={changeTitle}
                                 />
                             ))}
                     </Container>
@@ -168,4 +184,3 @@ function Category(props) {
 }
 
 export { Category };
-
