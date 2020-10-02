@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/esm/Button";
 import { Redirect } from "react-router-dom";
 import { HeaderBar } from "../components/HeaderBar";
-import { addBoards, updateBoardPosition } from "../crud_api";
+import { addBoards, calculatePositions2 } from "../crud_api";
 import "../styles/User.css";
 import { AddBoardModal } from "../components/modals/board/AddBoardModal";
 
@@ -93,7 +93,7 @@ function User(props) {
         cookies,
     ]);
 
-    useEffect(() => calculatePositions(), [star, boards]);
+    useEffect(() => calculatePositions2(), [star, boards]);
 
     return (
         <div className="background">
@@ -129,17 +129,5 @@ function User(props) {
         </div>
     );
 }
-
-const calculatePositions = () => {
-    let boards = document.querySelectorAll(".backgroundU");
-    for (let i = 0; i < boards.length; i++) {
-        let boardGroup = boards[i];
-        let board = boardGroup.querySelectorAll(".green");
-        for (let j = 0; j < board.length; j++) {
-            let boardId = board[j].getAttribute("id");
-            updateBoardPosition(boardId, j);
-        }
-    }
-};
 
 export { User };

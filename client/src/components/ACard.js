@@ -17,6 +17,7 @@ function ACard(props) {
         e.dataTransfer.setData("color", props.c);
         e.dataTransfer.setData("title", props.title);
         e.dataTransfer.setData("description", props.description);
+        console.log(e.clientX);
         setTimeout(() => props.removeId(props.id), 0);
     };
 

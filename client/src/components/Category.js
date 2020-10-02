@@ -101,6 +101,7 @@ function Category(props) {
             category: props.id,
             position: 0,
         });
+        console.log(cardsPh);
         changeCardCategory(cardId, props.id);
         setCards(cardsPh);
         calculatePositions();
