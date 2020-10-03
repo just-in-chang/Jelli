@@ -16,7 +16,7 @@ git clone https://github.com/Madelovina/Jelli
 pip install djangorestframework django-cors-headers
 ```
 
-3. Set the secret key in `server/settigns.py`
+3. Set the secret key in `server/settings.py`
 
 4. Change to the `/client` directory and install the Node.js modules
 
