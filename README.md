@@ -1,8 +1,8 @@
-# Jelli
+# ✔ Jelli
 
 Jelli is a web app to help others organize their tasks and manage their projects. Utilizes a React front-end to display information retrieved from the Django Rest API back-end. Inspired by Trello.
 
-## Installation
+## 🔽 Installation
 
 1. Clone repository
 
@@ -25,7 +25,7 @@ cd client
 npm install
 ```
 
-## Usage
+## 🚩 Usage
 
 Initialize client
 
@@ -41,7 +41,7 @@ cd server
 python manage.py runserver
 ```
 
-## Testing
+## 🧪 Testing
 
 To test the API endpoints and CRUD operations, run the following commands:
 
