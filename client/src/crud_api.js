@@ -143,12 +143,14 @@ const getCategories = (boardId, setCategories, setLoading) => {
         })
         .then((r) => {
             let categoryList = r.categories;
-            categoryList.sort((a, b) => {
-                let x = a["position"];
-                let y = b["position"];
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            setCategories(categoryList);
+            if (categoryList != undefined) {
+                categoryList.sort((a, b) => {
+                    let x = a["position"];
+                    let y = b["position"];
+                    return x < y ? -1 : x > y ? 1 : 0;
+                });
+                setCategories(categoryList);
+            }
             setLoading(false);
         });
 };
@@ -164,12 +166,14 @@ const getCards = (categoryId, setCards, setLoading) => {
         })
         .then((r) => {
             let cards = r.cards;
-            cards.sort((a, b) => {
-                let x = a["position"];
-                let y = b["position"];
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            setCards(r.cards);
+            if (cards != undefined) {
+                cards.sort((a, b) => {
+                    let x = a["position"];
+                    let y = b["position"];
+                    return x < y ? -1 : x > y ? 1 : 0;
+                });
+                setCards(r.cards);
+            }
             setLoading(false);
         });
 };

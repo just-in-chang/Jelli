@@ -13,6 +13,7 @@ function User(props) {
     const [boards, setBoards] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [home, setHome] = useState(false);
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -89,9 +90,10 @@ function User(props) {
         );
     };
 
-    useEffect(() => addBoards(cookies.get("user"), addStar, addBoard), [
-        cookies,
-    ]);
+    useEffect(() => {
+        if (cookies.get("user") == undefined) setHome(true);
+        addBoards(cookies.get("user"), addStar, addBoard);
+    }, [cookies]);
 
     useEffect(() => calculatePositions2(), [star, boards]);
 
@@ -103,6 +105,7 @@ function User(props) {
                 ) : (
                     <HeaderBar cookies={cookies} />
                 )}
+                {home ? <Redirect to={"/"} /> : null}
                 <AddBoardModal
                     show={showModal}
                     onHide={handleCloseModal}
@@ -110,7 +113,6 @@ function User(props) {
                     star={newStar}
                     board={newBoard}
                 />
-
                 <div className="bkgd">
                     <h1>Boards</h1>
                     <div className="addBoard">

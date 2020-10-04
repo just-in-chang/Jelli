@@ -29,6 +29,7 @@ function Board(props) {
     };
 
     useEffect(() => {
+        if (cookies.get("board") == undefined) setBackUser(true);
         if (loading) {
             getCategories(cookies.get("board"), setCategories, setLoading);
             getBoardName(cookies.get("board"), setB);
