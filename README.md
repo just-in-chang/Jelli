@@ -43,9 +43,16 @@ python manage.py runserver
 
 ## Testing
 
-Run the following command to test server endpoints and CRUD operations
+To test the API endpoints and CRUD operations, run the following commands:
 
 ```bash
 cd server
 python manage.py test
+```
+
+To test the React.js front-end using Cypress, run the following commands after initializing the client and server:
+
+```bash
+cd client
+npx cypress open
 ```
