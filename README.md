@@ -27,16 +27,25 @@ npm install
 
 ## Usage
 
-1. Initialize client
+Initialize client
 
 ```bash
 cd client
 npm start
 ```
 
-2. Initialize server
+Initialize server
 
 ```bash
 cd server
 python manage.py runserver
+```
+
+## Testing
+
+Run the following command to test server endpoints and CRUD operations
+
+```bash
+cd server
+python manage.py test
 ```
