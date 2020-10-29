@@ -33,14 +33,15 @@ const handleRegister = (username, password, error, success) => {
             return id;
         })
         .then((r) => {
-            if (r > 0) {
+            if (r >= 0) {
                 return error("This username has already been taken");
             } else {
-                fetch(USERS_URL, optionsPOST);
                 error("");
-                return success(r);
+                return fetch(USERS_URL, optionsPOST);
             }
-        });
+        })
+        .then((r) => r.json())
+        .then((r) => success(r.id));
 };
 
 const handleLogin = (username, password, error, success) => {
@@ -100,9 +101,11 @@ const newBoard = (id, board, star, error, starM, boardsM, cookies) => {
     fetch(url, optionsGET)
         .then((r) => r.json())
         .then((r) => {
-            for (let i = 0; i < r.boards.length; i++)
-                if (r.boards[i].name == board) return -1;
-            return r.boards.length;
+            if (r.boards != undefined) {
+                for (let i = 0; i < r.boards.length; i++)
+                    if (r.boards[i].name == board) return -1;
+                return r.boards.length;
+            } else return 0;
         })
         .then((r) => {
             if (r < 0) return error("Board name already taken");
