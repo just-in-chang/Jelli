@@ -1,4 +1,4 @@
-# ✔ Jelli
+# 📅 Jelli
 
 Jelli is a web app to help others organize their tasks and manage their projects. Utilizes a React front-end to display information retrieved from the Django Rest API back-end. Inspired by Trello.
 
