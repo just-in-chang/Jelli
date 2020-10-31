@@ -22,9 +22,9 @@ function HeaderBar(props) {
             <Button
                 inline
                 onClick={() => {
-                    props.cookies.remove("user");
-                    props.cookies.remove("board");
-                    props.cookies.remove("star");
+                    props.cookies.remove("user", { path: "/" });
+                    props.cookies.remove("board", { path: "/" });
+                    props.cookies.remove("star", { path: "/" });
                 }}
                 href="/"
             >

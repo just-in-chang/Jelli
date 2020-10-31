@@ -1,11 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import Cookies from "universal-cookie";
 import { App } from "./App";
 import * as serviceWorker from "./serviceWorker";
-
-const cookies = new Cookies();
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
