@@ -1,0 +1,3 @@
+[submodule "Jelli-Client"]
+	path = Jelli-Client
+	url = https://github.com/just-in-chang/Jelli-Client.git
